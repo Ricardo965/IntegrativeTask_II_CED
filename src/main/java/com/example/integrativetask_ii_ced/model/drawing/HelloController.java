@@ -34,13 +34,14 @@ public class HelloController implements Initializable {
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         canvas.setCursor(customCursor);
-        enemies.add(new Enemy(400, 200, 90, 90, 100));
+        enemies.add(new Enemy(400, 200, 60, 60, 100));
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(character::pressKey);
         canvas.setOnKeyReleased(character::releasedKey);
         canvas.setOnMouseClicked(this::mouseClicked);
         canvas.setOnMouseMoved(this::onMouseMoved);
+        new Thread(character).start();
         draw();
     }
 
@@ -58,6 +59,8 @@ public class HelloController implements Initializable {
                         enemy.draw(gc);
                     }
                     character.draw(gc);
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(100, 100, 80, 80);
                 });
                 character.movement();
                 for (Bullet bullet : bullets) {
@@ -85,18 +88,7 @@ public class HelloController implements Initializable {
     }
 
     private void mouseClicked(MouseEvent event) {
-        double diffX = event.getX()+10 - character.getPosition().getX();
-        double diffY = event.getY()+10 - character.getPosition().getY();
-        Vector diff = new Vector(diffX, diffY);
-        diff.normalize();
-        diff.setMag(4);
-
-
-        bullets.add(
-                new Bullet(
-                        character.getPosition().getX(), character.getPosition().getY(), 5, 5, 20, diff
-                )
-        );
+        character.shoot(event, bullets);
     }
 
     private void onMouseMoved(MouseEvent e) {
