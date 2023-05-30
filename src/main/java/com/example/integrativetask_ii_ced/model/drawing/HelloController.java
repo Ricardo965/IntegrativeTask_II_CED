@@ -1,7 +1,10 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
-import com.example.integrativetask_ii_ced.HelloApplication;
 import com.example.integrativetask_ii_ced.model.entities.*;
+import com.example.integrativetask_ii_ced.model.entities.mob.Boss;
+import com.example.integrativetask_ii_ced.model.entities.objects.functional.Bullet;
+import com.example.integrativetask_ii_ced.model.entities.objects.Obstacle;
+import com.example.integrativetask_ii_ced.model.entities.objects.functional.PressurePlate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,8 +16,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HelloController implements Initializable, Runnable{
@@ -29,6 +30,8 @@ public class HelloController implements Initializable, Runnable{
     public static CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
     private final Cursor customCursor = new ImageCursor(new Image("file:src/main/resources/images/Cursor/nt_normal.png"));
 
+    public static CopyOnWriteArrayList<PressurePlate> pressurePlates = new CopyOnWriteArrayList<>();
+
 
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
@@ -38,6 +41,10 @@ public class HelloController implements Initializable, Runnable{
         canvas.setOnKeyPressed(character::pressKey);
         canvas.setOnKeyReleased(character::releasedKey);
         finalBoss = new Boss(canvas.getWidth()/2, canvas.getHeight()/2, 120, 170, 100);
+        pressurePlates.add(new PressurePlate(100, 100, 80));
+        pressurePlates.add(new PressurePlate(200, 200, 80));
+        pressurePlates.add(new PressurePlate(300, 300, 80));
+        pressurePlates.add(new PressurePlate(400, 400, 80));
         canvas.setOnMouseMoved(this::onMouseMoved);
         new Thread(character).start();
         new Thread(finalBoss).start();
@@ -53,8 +60,14 @@ public class HelloController implements Initializable, Runnable{
                     bullets.remove(bullet);
                 }
             }
+            for(PressurePlate pressurePlate : pressurePlates){
+                pressurePlate.isPressed(character);
+            }
+
         }
     }
+
+
 
     public void draw(){
         Thread h = new Thread(() -> {
@@ -70,6 +83,9 @@ public class HelloController implements Initializable, Runnable{
                     gc.fillRect(100, 100, 80, 80);
                     for (Bullet bullet : bullets) {
                         bullet.draw(gc);
+                    }
+                    for(PressurePlate pressurePlate : pressurePlates){
+                        pressurePlate.draw(gc);
                     }
                 });
 

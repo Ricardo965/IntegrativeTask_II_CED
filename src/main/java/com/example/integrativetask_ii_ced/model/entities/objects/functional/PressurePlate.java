@@ -1,0 +1,34 @@
+package com.example.integrativetask_ii_ced.model.entities.objects.functional;
+
+import com.example.integrativetask_ii_ced.model.entities.Avatar;
+import com.example.integrativetask_ii_ced.model.entities.objects.Obstacle;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+
+public class PressurePlate extends Obstacle {
+
+    public boolean isPressed = false;
+
+    public PressurePlate(double x, double y, double life) {
+        super(x, y, life);
+    }
+
+    @Override
+    public void draw(GraphicsContext gc) {
+        if ( isPressed ) {
+            gc.setFill(Color.BLUE);
+        } else {
+            gc.setFill(Color.GREEN);
+        }
+        gc.fillRect(position.getX(), position.getY(), getWidth(), getHeight());
+    }
+
+    public boolean isPressed(Avatar avatar) {
+        if(hitBox.comparePosition(avatar.getHitBox())){
+            isPressed = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

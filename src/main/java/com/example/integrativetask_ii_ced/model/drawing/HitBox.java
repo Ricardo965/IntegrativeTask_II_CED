@@ -1,6 +1,8 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
-public class HitBox {
+import javafx.scene.canvas.GraphicsContext;
+
+public class HitBox  {
     protected double x0;
     protected double y0;
     protected double x1;
@@ -20,6 +22,7 @@ public class HitBox {
         this.x1 = x1;
         this.y1 = y1;
     }
+
 
     public double getX0() {
         return x0;

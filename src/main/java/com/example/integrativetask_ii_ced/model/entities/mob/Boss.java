@@ -1,7 +1,9 @@
-package com.example.integrativetask_ii_ced.model.entities;
+package com.example.integrativetask_ii_ced.model.entities.mob;
 
 import com.example.integrativetask_ii_ced.model.drawing.HelloController;
 import com.example.integrativetask_ii_ced.model.drawing.Vector;
+import com.example.integrativetask_ii_ced.model.entities.Avatar;
+import com.example.integrativetask_ii_ced.model.entities.objects.functional.Bullet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 

@@ -40,6 +40,10 @@ public abstract class  Avatar implements Drawable {
         this.hitBox = hitBox;
     }
 
+    public double getLife() {
+        return life;
+    }
+
     public double getWidth() {
         return width;
     }
@@ -56,12 +60,7 @@ public abstract class  Avatar implements Drawable {
         this.height = height;
     }
 
-    public double getLife() {
-        return life;
-    }
-
     public void setLife(double life) {
         this.life = life;
     }
-
 }

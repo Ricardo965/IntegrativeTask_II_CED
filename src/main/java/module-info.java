@@ -9,5 +9,13 @@ module com.example.integrativetask_ii_ced {
     opens com.example.integrativetask_ii_ced.model.drawing to javafx.fxml;
     exports com.example.integrativetask_ii_ced.model.entities;
     opens com.example.integrativetask_ii_ced.model.entities to javafx.fxml;
+    exports com.example.integrativetask_ii_ced.model.entities.mob;
+    opens com.example.integrativetask_ii_ced.model.entities.mob to javafx.fxml;
+    exports com.example.integrativetask_ii_ced.model.entities.objects;
+    opens com.example.integrativetask_ii_ced.model.entities.objects to javafx.fxml;
+    exports com.example.integrativetask_ii_ced.model.entities.objects.obstacle;
+    opens com.example.integrativetask_ii_ced.model.entities.objects.obstacle to javafx.fxml;
+    exports com.example.integrativetask_ii_ced.model.entities.objects.functional;
+    opens com.example.integrativetask_ii_ced.model.entities.objects.functional to javafx.fxml;
 
 }

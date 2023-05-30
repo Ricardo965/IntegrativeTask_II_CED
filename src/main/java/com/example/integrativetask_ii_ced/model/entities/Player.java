@@ -1,17 +1,10 @@
 package com.example.integrativetask_ii_ced.model.entities;
 
-import com.example.integrativetask_ii_ced.HelloApplication;
 import com.example.integrativetask_ii_ced.model.drawing.HelloController;
-import com.example.integrativetask_ii_ced.model.drawing.Vector;
-import javafx.event.Event;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player extends Avatar implements Runnable {
     private boolean keyA;
@@ -47,7 +40,8 @@ public class Player extends Avatar implements Runnable {
 
     @Override
     public void draw(GraphicsContext gc) {
-            gc.drawImage((isMoving() ? run[frame] : idle[frame]), isFacingRight ? position.getX() - (width / 2) : position.getX() + (width / 2), position.getY() - (width / 2), isFacingRight ? width : -width, height);
+        gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
+        gc.drawImage((isMoving() ? run[frame] : idle[frame]), isFacingRight ? position.getX() - (width / 2) : position.getX() + (width / 2), position.getY() - (width / 2), isFacingRight ? width : -width, height);
     }
 
     @Override

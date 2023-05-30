@@ -1,5 +1,6 @@
-package com.example.integrativetask_ii_ced.model.entities;
+package com.example.integrativetask_ii_ced.model.entities.mob;
 
+import com.example.integrativetask_ii_ced.model.entities.Avatar;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
