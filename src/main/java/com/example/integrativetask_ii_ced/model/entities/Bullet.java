@@ -7,9 +7,11 @@ import javafx.scene.paint.Color;
 public class Bullet extends Avatar {
 
     private Vector dir;
-    public Bullet(double x, double y, double width, double height, double life, Vector dir) {
+    private double damage;
+    public Bullet(double x, double y, double width, double height, double life, Vector dir, double damage) {
         super(x, y, width, height, life);
         this.dir = dir;
+        this.damage = damage;
     }
 
 
@@ -25,5 +27,15 @@ public class Bullet extends Avatar {
 
     public boolean outside(double height, double width) {
         return position.getX() > width || position.getX() < 0 || position.getY() > height || position.getY() < 0;
+    }
+
+    public boolean giveDamage(Avatar avatar){
+        if(hitBox.comparePosition(avatar.getHitBox())){
+            System.out.println("hit");
+            avatar.setLife(avatar.getLife()-this.damage);
+            System.out.println(avatar.getLife()-this.damage + " life" + avatar.getLife() + " damage" + this.damage);
+            return true;
+        }
+        return false;
     }
 }

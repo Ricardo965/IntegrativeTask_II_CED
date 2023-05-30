@@ -4,9 +4,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Enemy extends Avatar {
+    private Image idle;
     public Enemy(double x, double y, double width, double height, double life){
         super(x, y, width, height, life);
-        String uri = "file:src/main/resources/images/avatar.png";
+        String uri = "file:src/main/resources/images/FinalBoss/Boss.png";
         idle = new Image(uri);
 
     }

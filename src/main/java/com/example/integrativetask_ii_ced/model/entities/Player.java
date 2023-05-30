@@ -22,11 +22,6 @@ public class Player extends Avatar implements Runnable {
 
     private Image[] idle;
     private Image[] run;
-
-    private Image[] runShoot;
-
-    private Image[] shoot;
-
     private int frame = 0;
 
     private boolean isFacingRight = true;
@@ -92,11 +87,9 @@ public class Player extends Avatar implements Runnable {
     }
 
     private boolean colission() {
-        for (Enemy enemy : HelloController.enemies) {
-            if (hitBox.comparePosition(enemy.getHitBox())) {
-                hitBox.refreshHitBox(position.getX()-(width/2), position.getY()-(height/2), position.getX()+(width/2), position.getY()+(height/2));
-                return true;
-            }
+        if (hitBox.comparePosition(HelloController.finalBoss.getHitBox())) {
+            hitBox.refreshHitBox(position.getX()-(width/2), position.getY()-(height/2), position.getX()+(width/2), position.getY()+(height/2));
+            return true;
         }
         return false;
     }
