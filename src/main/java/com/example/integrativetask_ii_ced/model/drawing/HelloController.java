@@ -34,7 +34,7 @@ public class HelloController implements Initializable {
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         canvas.setCursor(customCursor);
-        enemies.add(new Enemy(400, 200, 60, 60, 100));
+        enemies.add(new Enemy(400, 200, 256, 256, 100));
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(character::pressKey);
@@ -82,10 +82,5 @@ public class HelloController implements Initializable {
         );
     }
 
-    private void collision(Avatar avatar){
-        for(int i=0 ; i<enemies.size() ; i++){
-            if ( avatar.getHitBox().comparePosition(enemies.get(i).getHitBox()) ){
-            }
-        }
-    }
+
 }
