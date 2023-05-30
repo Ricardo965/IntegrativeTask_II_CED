@@ -1,5 +1,6 @@
 package com.example.integrativetask_ii_ced;
 
+import com.example.integrativetask_ii_ced.model.entities.Enemy;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

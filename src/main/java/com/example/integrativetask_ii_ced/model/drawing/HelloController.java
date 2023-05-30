@@ -1,6 +1,7 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
 import com.example.integrativetask_ii_ced.HelloApplication;
+import com.example.integrativetask_ii_ced.model.entities.Avatar;
 import com.example.integrativetask_ii_ced.model.entities.Bullet;
 import com.example.integrativetask_ii_ced.model.entities.Enemy;
 import com.example.integrativetask_ii_ced.model.entities.Player;
@@ -27,8 +28,7 @@ public class HelloController implements Initializable {
     private Canvas canvas;
     private GraphicsContext gc;
     private final Player character = new Player(50, 100, 70, 70,200);
-    private final CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
-    private final CopyOnWriteArrayList<Enemy> enemies = new CopyOnWriteArrayList<>();
+    public static CopyOnWriteArrayList<Enemy> enemies = new CopyOnWriteArrayList<>();
     private final Cursor customCursor = new ImageCursor(new Image("file:src/main/resources/images/Cursor/nt_normal.png"));
 
     @Override
@@ -39,7 +39,6 @@ public class HelloController implements Initializable {
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(character::pressKey);
         canvas.setOnKeyReleased(character::releasedKey);
-        canvas.setOnMouseClicked(this::mouseClicked);
         canvas.setOnMouseMoved(this::onMouseMoved);
         new Thread(character).start();
         draw();
@@ -52,9 +51,6 @@ public class HelloController implements Initializable {
                 Platform.runLater(() -> {
                     gc.setFill(Color.WHITE);
                     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                    for (Bullet bullet : bullets){
-                        bullet.draw(gc);
-                    }
                     for (Enemy enemy : enemies){
                         enemy.draw(gc);
                     }
@@ -63,10 +59,6 @@ public class HelloController implements Initializable {
                     gc.fillRect(100, 100, 80, 80);
                 });
                 character.movement();
-                for (Bullet bullet : bullets) {
-                    collision(bullet);
-                    bulletOutside(bullet);
-                }
                 for (Enemy enemy : enemies){
                     enemy.draw(gc);
                 }
@@ -80,16 +72,8 @@ public class HelloController implements Initializable {
         h.start();
     }
 
-    private void bulletOutside(Bullet bullet) {
-        if(bullet.outside(canvas.getHeight(), canvas.getWidth())){
-            bullets.remove(bullet);
-            System.out.println("Bullet removed");
-        }
-    }
 
-    private void mouseClicked(MouseEvent event) {
-        character.shoot(event, bullets);
-    }
+
 
     private void onMouseMoved(MouseEvent e) {
         double relativePosition = e.getX()-character.getPosition().getX();
@@ -98,12 +82,9 @@ public class HelloController implements Initializable {
         );
     }
 
-    private void collision(Bullet bullet){
+    private void collision(Avatar avatar){
         for(int i=0 ; i<enemies.size() ; i++){
-            if ( bullet.getHitBox().comparePosition(enemies.get(i).getHitBox()) ){
-                enemies.remove(i);
-                bullets.remove(bullet);
-                System.out.println("XD");
+            if ( avatar.getHitBox().comparePosition(enemies.get(i).getHitBox()) ){
             }
         }
     }
