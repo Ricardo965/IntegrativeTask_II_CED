@@ -580,4 +580,17 @@ public class TestGraph {
         }
         assertEquals("W T U", chain.trim());
     }
+
+    @Test
+    public void dfsForOneNodeSearchAM(){
+        setUpStage5AM();
+        List<String> list = graphAM.dfsSingleNode("S","R");
+        String chain = "";
+        for (String a: list
+        ) {
+            chain += a +" ";
+        }
+        assertEquals("R S", chain.trim());
+
+    }
 }
