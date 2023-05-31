@@ -6,7 +6,7 @@ import com.example.integrativetask_ii_ced.model.drawing.Vector;
 import com.example.integrativetask_ii_ced.model.entities.Avatar;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Obstacle implements Drawable {
+public abstract class  Obstacle implements Drawable {
 
     private static final double WIDTH_SIZE = 80;
     private static final double HEIGHT_SIZE = 80;
