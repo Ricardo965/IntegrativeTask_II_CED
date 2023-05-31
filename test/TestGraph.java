@@ -624,4 +624,18 @@ public class TestGraph {
         assertEquals("Y U X T W S R V", chain3.trim());
 
     }
+
+    @Test
+    public void dfsForOneNodeSearch2AM(){
+        //Here is missing further testing
+        setUpStage4NoDirectedAM();
+        List<String> list = graphAM.dfsSingleNode("Y","X");
+        String chain = "";
+        for (String a: list
+        ) {
+            chain += a +" ";
+        }
+        assertEquals("X Y", chain.trim());
+
+    }
 }
