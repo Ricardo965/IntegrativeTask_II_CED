@@ -1,17 +1,19 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
 
+import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameMap {
 
     ArrayList<ArrayList<MapNode>> mapGuide;
-    Graph<Coordinate> graph;
+    AdjencyListGraph<Double[]> graph;
     
     public GameMap() {
         this.mapGuide = new ArrayList<>();
-        this.graph=  new Graph<>(false,false);
+        this.graph=  new AdjencyListGraph<>(false,false);
     }
     
     public void initialFillingOfMapWithNodesAndCoordinates( double nodeSize, double width, double height){
@@ -85,29 +87,13 @@ public class GameMap {
             for (int j = 0; j < width/nodeSize; j++) {
 
                 if (getMapGuide().get(i).get(j).isNavigable() && j == 0){
-                    Coordinate  coordinate = new Coordinate();
-                    coordinate.setX(getMapGuide().get(i).get(j).getPosition().getX());
-                    coordinate.setY(getMapGuide().get(i).get(j).getPosition().getY());
-                    graph.insertVertex(coordinate);
-                }
-
-                if (getMapGuide().get(i).get(j).isNavigable() && j != width/nodeSize -1 ){
-                    Coordinate  coordinate = new Coordinate();
-
-                    coordinate.setX(getMapGuide().get(i).get(j+1).getPosition().getX());
-                    coordinate.setY(getMapGuide().get(i).get(j+1).getPosition().getY());
+                    Double [] coordinates = new Double[2];
+                    coordinates[0] =  getMapGuide().get(i).get(j).getPosition().getX();
+                    coordinates[1] =  getMapGuide().get(i).get(j).getPosition().getY();
                     graph.insertVertex(coordinates);
-                    graph.setedge();
                 }
 
-                if (i ==0 ) continue;
-
-                if (getMapGuide().get(i-1).get(j).isNavigable()){
-                    Coordinate  coordinate = new Coordinate();
-                    coordinate.setX(getMapGuide().get(i-1).get(j).getPosition().getX());
-                    coordinate.setY(getMapGuide().get(i-1).get(j).getPosition().getY());
-                    graph.setedge();
-                }
+                if (getMapGuide().get(i).get(j).isNavigable() )
             }
         }
         
@@ -120,4 +106,11 @@ public class GameMap {
         this.mapGuide = mapGuide;
     }
 
+    public AdjencyListGraph<Integer[]> getGraph() {
+        return graph;
+    }
+
+    public void setGraph(AdjencyListGraph<Integer[]> graph) {
+        this.graph = graph;
+    }
 }
