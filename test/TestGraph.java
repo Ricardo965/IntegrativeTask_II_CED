@@ -1,3 +1,4 @@
+import com.example.integrativetask_ii_ced.structure.graph.AdjacencyMatrixGraph;
 import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
 import com.example.integrativetask_ii_ced.structure.narytree.Node;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestGraph {
 
     private static AdjencyListGraph<String> graph;
+    private static AdjacencyMatrixGraph<String> graphAM;
 
 
     public void  setUpStage1(){
@@ -121,6 +123,29 @@ public class TestGraph {
         graph.insertWeightedEdge("E","Z",3);
         graph.insertWeightedEdge("D","Z",6);
 
+    }
+
+    public void setUpStage10AMGNoDirected(){
+        graphAM = new AdjacencyMatrixGraph<>(false, false);
+        graphAM.insertVertex("V");
+        graphAM.insertVertex("R");
+        graphAM.insertVertex("S");
+        graphAM.insertVertex("W");
+        graphAM.insertVertex("T");
+        graphAM.insertVertex("X");
+        graphAM.insertVertex("U");
+        graphAM.insertVertex("Y");
+        //Insertions:
+        graphAM.insertEdge("V","R");
+        graphAM.insertEdge("S","R");
+        graphAM.insertEdge("W","S");
+        graphAM.insertEdge("T","W");
+        graphAM.insertEdge("W","X");
+        graphAM.insertEdge("X","T");
+        graphAM.insertEdge("U","T");
+        graphAM.insertEdge("X","U");
+        graphAM.insertEdge("X","Y");
+        graphAM.insertEdge("U","Y");
     }
     // Dijkstra testing
 
@@ -479,5 +504,48 @@ public class TestGraph {
         }
         assertEquals(2, graph.bfs("H").weight());
         assertEquals("H L " , test2);
+    }
+
+    @Test
+    public void bfsSearchForOneNodeAM(){
+        setUpStage10AMGNoDirected();
+        List<String> result = graphAM.bfsSingleNode("S", "U");
+        String chain  = "";
+        for (int i = result.size()-1 ; i > -1; i--) {
+            chain += result.get(i) + " ";
+        }
+        assertEquals("S W T U", chain.trim());
+    }
+    @Test
+    public void bfsSearchForOneNode2AM(){
+        setUpStage10AMGNoDirected();
+        List<String> result = graphAM.bfsSingleNode("R", "V");
+        String chain  = "";
+        for (int i = result.size()-1 ; i > -1; i--) {
+            chain += result.get(i) + " ";
+        }
+        assertEquals("R V", chain.trim());
+    }
+
+    @Test
+    public void bfsSearchForOneNode3AM(){
+        setUpStage10AMGNoDirected();
+        List<String> result = graphAM.bfsSingleNode("Y", "V");
+        String chain  = "";
+        for (int i = result.size()-1 ; i > -1; i--) {
+            chain += result.get(i) + " ";
+        }
+        assertEquals("Y X W S R V", chain.trim());
+    }
+
+    @Test
+    public void bfsSearchForOneNode4AM(){
+        setUpStage10AMGNoDirected();
+        List<String> result = graphAM.bfsSingleNode("W", "U");
+        String chain  = "";
+        for (int i = result.size()-1 ; i > -1; i--) {
+            chain += result.get(i) + " ";
+        }
+        assertEquals("W T U", chain.trim());
     }
 }
