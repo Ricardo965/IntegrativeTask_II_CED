@@ -64,6 +64,15 @@ public class TestGraph {
         graph.insertEdge("S","R");
 
     }
+    public void setUpStage5AM(){
+        graphAM = new AdjacencyMatrixGraph<>(false, false);
+        graphAM.insertVertex("S");
+        graphAM.insertVertex("R");
+        graphAM.insertVertex("W");
+        graphAM.insertEdge("S","W");
+        graphAM.insertEdge("S","R");
+
+    }
 
     public void  setUpStage6(){
         graph = new AdjencyListGraph<>(false, false);
