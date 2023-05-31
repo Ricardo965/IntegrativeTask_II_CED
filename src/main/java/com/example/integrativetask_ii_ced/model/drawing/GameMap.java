@@ -1,17 +1,19 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
 
+import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameMap {
 
     ArrayList<ArrayList<MapNode>> mapGuide;
-    Graph<Double[]> graph;
+    AdjencyListGraph<Double[]> graph;
     
     public GameMap() {
         this.mapGuide = new ArrayList<>();
-        this.graph=  new Graph<>(false,false);
+        this.graph=  new AdjencyListGraph<>(false,false);
     }
     
     public void initialFillingOfMapWithNodesAndCoordinates( double nodeSize, double width, double height){
@@ -104,11 +106,11 @@ public class GameMap {
         this.mapGuide = mapGuide;
     }
 
-    public Graph<Integer[]> getGraph() {
+    public AdjencyListGraph<Integer[]> getGraph() {
         return graph;
     }
 
-    public void setGraph(Graph<Integer[]> graph) {
+    public void setGraph(AdjencyListGraph<Integer[]> graph) {
         this.graph = graph;
     }
 }

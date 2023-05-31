@@ -1,6 +1,6 @@
 package com.example.integrativetask_ii_ced;
 
-import com.example.integrativetask_ii_ced.model.structure.graph.Graph;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
