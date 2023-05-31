@@ -15,12 +15,14 @@ public class PressurePlate extends Obstacle {
 
     @Override
     public void draw(GraphicsContext gc) {
+        gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
+
         if ( isPressed ) {
             gc.setFill(Color.BLUE);
         } else {
             gc.setFill(Color.GREEN);
         }
-        gc.fillRect(position.getX(), position.getY(), getWidth(), getHeight());
+        gc.fillRect(position.getX() - (width / 2), position.getY() - (height/2), getWidth(), getHeight());
     }
 
     public boolean isPressed(Avatar avatar) {

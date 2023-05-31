@@ -40,6 +40,7 @@ public class Player extends Avatar implements Runnable {
 
     @Override
     public void draw(GraphicsContext gc) {
+        hitBox.refreshHitBox(position.getX()-(width/2), position.getY()-(height/2), position.getX()+(width/2), position.getY()+(height/2));
         gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
         gc.drawImage((isMoving() ? run[frame] : idle[frame]), isFacingRight ? position.getX() - (width / 2) : position.getX() + (width / 2), position.getY() - (width / 2), isFacingRight ? width : -width, height);
     }
