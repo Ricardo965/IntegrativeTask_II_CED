@@ -204,6 +204,50 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
     }
 
 
+    public ArrayList<V> bfsSingleNode(V from , V to) {
+        if (getVertexes().isEmpty()) return null;
+        Vertex<V> fromVertex  = searchVertex(from);
+        Vertex<V> toVertex  = searchVertex(to);
+
+        for (Vertex<V> u :vertexes) {
+            u.setColor(ColorType.WHITE);
+            u.setDistance(Integer.MAX_VALUE);
+            u.setFather(null);
+        }
+
+        fromVertex.setColor(ColorType.GRAY);
+        fromVertex.setDistance(0);
+
+        Queue<Vertex<V>> queue = new LinkedList<>();
+        queue.add(fromVertex);
+
+        while(!queue.isEmpty()){
+            Vertex<V> u = queue.poll();
+            int uPos = vertexes.indexOf(u);
+            for(int i = 0; i < adjacencyMatrix.get(uPos).size(); i++){
+                if(adjacencyMatrix.get(uPos).get(i) < Double.MAX_VALUE){
+                    if(vertexes.get(i).getColor() == ColorType.WHITE){
+                        vertexes.get(i).setColor(ColorType.GRAY);
+                        vertexes.get(i).setDistance(u.getDistance()+1);
+                        vertexes.get(i).setFather(u);
+                        queue.add(vertexes.get(i));
+                    }
+                }
+            }
+            u.setColor(ColorType.BLACK);
+        }
+
+        ArrayList<V> path = new ArrayList<>();
+        Vertex<V> current = toVertex;
+        while(current != null){
+            path.add(current.getValue());
+            current = current.getFather();
+        }
+        return path;
+
+    }
+
+
     public ArrayList<Vertex<V>> getVertexes() {
         return vertexes;
     }
