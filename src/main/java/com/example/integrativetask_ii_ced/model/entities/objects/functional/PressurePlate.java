@@ -9,8 +9,8 @@ public class PressurePlate extends Obstacle {
 
     public boolean isPressed = false;
 
-    public PressurePlate(double x, double y, double life) {
-        super(x, y, life);
+    public PressurePlate(double x, double y) {
+        super(x, y);
     }
 
     @Override

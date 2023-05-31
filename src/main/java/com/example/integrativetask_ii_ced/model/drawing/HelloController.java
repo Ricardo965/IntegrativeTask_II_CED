@@ -41,10 +41,10 @@ public class HelloController implements Initializable, Runnable{
         canvas.setOnKeyPressed(character::pressKey);
         canvas.setOnKeyReleased(character::releasedKey);
         finalBoss = new Boss(canvas.getWidth()/2, canvas.getHeight()/2, 120, 170, 100);
-        pressurePlates.add(new PressurePlate(100, 100, 80));
-        pressurePlates.add(new PressurePlate(200, 200, 80));
-        pressurePlates.add(new PressurePlate(300, 300, 80));
-        pressurePlates.add(new PressurePlate(400, 400, 80));
+        pressurePlates.add(new PressurePlate(100, 100));
+        pressurePlates.add(new PressurePlate(200, 200));
+        pressurePlates.add(new PressurePlate(300, 300));
+        pressurePlates.add(new PressurePlate(400, 400));
         canvas.setOnMouseMoved(this::onMouseMoved);
         new Thread(character).start();
         new Thread(finalBoss).start();
