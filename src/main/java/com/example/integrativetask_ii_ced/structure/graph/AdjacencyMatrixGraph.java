@@ -157,13 +157,39 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
 
     @Override
     public ArrayList<NaryTree<V>> dfs() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dfs'");
+        ArrayList<NaryTree<V>> naryTrees = new ArrayList<>();
+        for (Vertex<V> u: vertexes) {
+            u.setColor(ColorType.WHITE);
+            u.setFather(null);
+        }
+
+        for (Vertex<V> u: vertexes) {
+            if (u.getColor() == ColorType.WHITE){
+                NaryTree<V> naryTree = new NaryTree<>();
+                naryTree.setRoot(new Node<V>(u.getValue()));
+                dfsVisit(u, naryTree);
+                naryTrees.add(naryTree);
+            }
+        }
+
+        return naryTrees;
     }
 
     @Override
     public void dfsVisit(Vertex<V> from, NaryTree<V> tree) {
+        from.setColor(ColorType.GRAY);
 
+        int uPos = vertexes.indexOf(from);
+        for(int i = 0; i < adjacencyMatrix.get(uPos).size(); i++) {
+            if(adjacencyMatrix.get(uPos).get(i) < Double.MAX_VALUE) {
+                if(vertexes.get(i).getColor() == ColorType.WHITE){
+                    vertexes.get(i).setFather(from);
+                    tree.insertNode(vertexes.get(i).getValue(), from.getValue());
+                    dfsVisit(vertexes.get(i),tree);
+                }
+            }
+        }
+        from.setColor(ColorType.BLACK);
     }
 
     @Override
