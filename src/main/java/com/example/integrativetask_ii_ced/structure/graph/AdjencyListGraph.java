@@ -13,12 +13,14 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
 
     private boolean isDirected;
     private ArrayList<Vertex<V>> vertexes;
+    private ArrayList<Edge<V>> edges;
 
     private Hashtable<V, Hashtable<V,Integer>> weightedMatrix ;
 
     private boolean isWeighted;
     public AdjencyListGraph(boolean isDirected, boolean isWeighted) {
         this.vertexes = new ArrayList<>();
+        this.edges = new ArrayList<>();
         this.isDirected = isDirected;
         if (isWeighted){
             this.isWeighted = true;
@@ -114,7 +116,7 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
         Vertex toVertex = searchVertex(to);
 
         if (fromVertex == null || toVertex  == null) return false;
-
+        edges.add(new Edge<>(fromVertex, toVertex, weight));
         fromVertex.getAdjacency().add(toVertex);
         getWeightedMatrix().get(from).put(to,weight);
         if (!isDirected) {
@@ -372,6 +374,21 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
         if (current == null) return  stack;
         stack.add(current.getValue());
         return pathToCeil(current.getFather(),stack);
+    }
+
+    public ArrayList<Edge<V>> kruskal() {
+        ArrayList<Edge<V>> A = new ArrayList<>();
+        UnionFind unionFind = new UnionFind(vertexes.size());
+        Collections.sort(edges);
+        for (Edge<V> edge : edges) {
+            int u = vertexes.indexOf(edge.getFrom());
+            int v = vertexes.indexOf(edge.getTo());
+            if (unionFind.find(u) != unionFind.find(v)) {
+                A.add(edge);
+                unionFind.union(u, v);
+            }
+        }
+        return A;
     }
 
 
