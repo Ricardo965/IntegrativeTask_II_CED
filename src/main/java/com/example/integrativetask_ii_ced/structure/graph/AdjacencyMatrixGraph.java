@@ -286,6 +286,31 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
         from.setColor(ColorType.BLACK);
     }
 
+    public double[][] floydWarshall() {
+        double[][] distances = new double[vertexes.size()][vertexes.size()];
+        //Vertex<V>[][] previous = new Vertex[vertexList.size()][vertexList.size()];
+        for(int i = 0; i < vertexes.size(); i++){
+            for(int j = 0; j < vertexes.size(); j++){
+                if(i == j){
+                    distances[i][j] = 0;
+                } else {
+                    distances[i][j] = adjacencyMatrix.get(i).get(j);
+                }
+
+            }
+        }
+        for (int k = 0; k < vertexes.size(); k++) {
+            for (int i = 0; i < vertexes.size(); i++) {
+                for (int j = 0; j < vertexes.size(); j++) {
+                    if ( distances[i][j] > distances[i][k] + distances[k][j] ) {
+                        distances[i][j] = distances[i][k] + distances[k][j];
+                    }
+                }
+            }
+        }
+        return distances;
+    }
+
 
     public ArrayList<Vertex<V>> getVertexes() {
         return vertexes;
