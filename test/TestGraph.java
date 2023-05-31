@@ -55,6 +55,29 @@ public class TestGraph {
         graph.insertEdge("U","Y");
     }
 
+    public void setUpStage4NoDirectedAM(){
+        graphAM = new AdjacencyMatrixGraph<>(false, false);
+        graphAM.insertVertex("V");
+        graphAM.insertVertex("R");
+        graphAM.insertVertex("S");
+        graphAM.insertVertex("W");
+        graphAM.insertVertex("T");
+        graphAM.insertVertex("X");
+        graphAM.insertVertex("U");
+        graphAM.insertVertex("Y");
+        //Insertions:
+        graphAM.insertEdge("V","R");
+        graphAM.insertEdge("S","R");
+        graphAM.insertEdge("W","S");
+        graphAM.insertEdge("T","W");
+        graphAM.insertEdge("W","X");
+        graphAM.insertEdge("X","T");
+        graphAM.insertEdge("U","T");
+        graphAM.insertEdge("X","U");
+        graphAM.insertEdge("X","Y");
+        graphAM.insertEdge("U","Y");
+    }
+
     public void setUpStage5(){
         graph = new AdjencyListGraph<>(false, false);
         graph.insertVertex("S");
