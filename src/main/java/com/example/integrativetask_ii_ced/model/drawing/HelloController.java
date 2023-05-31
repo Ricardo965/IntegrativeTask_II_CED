@@ -29,7 +29,6 @@ public class HelloController implements Initializable, Runnable{
     public static Boss finalBoss;
     public static CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
     private final Cursor customCursor = new ImageCursor(new Image("file:src/main/resources/images/Cursor/nt_normal.png"));
-
     public static CopyOnWriteArrayList<PressurePlate> pressurePlates = new CopyOnWriteArrayList<>();
 
 

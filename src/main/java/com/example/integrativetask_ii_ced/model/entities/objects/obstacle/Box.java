@@ -6,7 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 public class Box extends Obstacle {
 
     public Box(double x, double y, double life){
-        super(x, y, life);
+        super(x, y);
     }
 
     @Override

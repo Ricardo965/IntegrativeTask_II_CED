@@ -20,7 +20,6 @@ public class Boss extends Avatar implements Runnable{
     @Override
     public void draw(GraphicsContext gc) {
         gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
-
         hitBox.refreshHitBox(position.getX()-(width/2), position.getY()-(height/2), position.getX()+(width/2), position.getY()+(height/2));
         gc.drawImage(idle, hitBox.getX0(), hitBox.getY0(), width, height);
     }
