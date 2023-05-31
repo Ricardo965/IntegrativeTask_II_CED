@@ -4,6 +4,7 @@ import com.example.integrativetask_ii_ced.structure.narytree.Node;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -591,6 +592,36 @@ public class TestGraph {
             chain += a +" ";
         }
         assertEquals("R S", chain.trim());
+
+    }
+
+    @Test
+    public void dfsForOneNodeSearch1AM(){
+        setUpStage4NoDirectedAM();
+        List<String> list = graphAM.dfsSingleNode("V","U");
+        String chain = "";
+        for (String a: list
+        ) {
+            chain += a +" ";
+        }
+
+
+        ArrayList<Node> ch2 = graphAM.dfs().get(0).preOrder();
+        String chain2 = "";
+        for (Node a: ch2
+        ) {
+            chain2 += ((String)a.getElement()) +" ";
+        }
+
+        ArrayList<Node> ch3 = graphAM.dfs().get(0).postOrder();
+        String chain3 = "";
+        for (Node a: ch3
+        ) {
+            chain3 += ((String)a.getElement()) +" ";
+        }
+        assertEquals("U X T W S R V", chain.trim());
+        assertEquals("V R S W T X U Y", chain2.trim());
+        assertEquals("Y U X T W S R V", chain3.trim());
 
     }
 }
