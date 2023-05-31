@@ -1,14 +1,17 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
+
 import java.util.ArrayList;
 import java.util.Random;
 
 public class GameMap {
 
     ArrayList<ArrayList<MapNode>> mapGuide;
+    Graph<Double[]> graph;
     
     public GameMap() {
         this.mapGuide = new ArrayList<>();
+        this.graph=  new Graph<>(false,false);
     }
     
     public void initialFillingOfMapWithNodesAndCoordinates( double nodeSize, double width, double height){
@@ -80,7 +83,15 @@ public class GameMap {
 
         for (int i = 0; i < height/nodeSize ; i++) {
             for (int j = 0; j < width/nodeSize; j++) {
-                
+
+                if (getMapGuide().get(i).get(j).isNavigable() && j == 0){
+                    Double [] coordinates = new Double[2];
+                    coordinates[0] =  getMapGuide().get(i).get(j).getPosition().getX();
+                    coordinates[1] =  getMapGuide().get(i).get(j).getPosition().getY();
+                    graph.insertVertex(coordinates);
+                }
+
+                if (getMapGuide().get(i).get(j).isNavigable() )
             }
         }
         
@@ -91,5 +102,13 @@ public class GameMap {
 
     public void setMapGuide(ArrayList<ArrayList<MapNode>> mapGuide) {
         this.mapGuide = mapGuide;
+    }
+
+    public Graph<Integer[]> getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph<Integer[]> graph) {
+        this.graph = graph;
     }
 }

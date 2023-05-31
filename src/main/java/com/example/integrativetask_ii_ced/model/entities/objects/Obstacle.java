@@ -52,4 +52,12 @@ public abstract class  Obstacle implements Drawable {
     public void setHeight(double height) {
         this.height = height;
     }
+
+    public Vector getPosition() {
+        return position;
+    }
+
+    public void setPosition(Vector position) {
+        this.position = position;
+    }
 }
