@@ -7,7 +7,7 @@ import java.util.Random;
 public class GameMap {
 
     ArrayList<ArrayList<MapNode>> mapGuide;
-    Graph<Double[]> graph;
+    Graph<Coordinate> graph;
     
     public GameMap() {
         this.mapGuide = new ArrayList<>();
@@ -85,13 +85,29 @@ public class GameMap {
             for (int j = 0; j < width/nodeSize; j++) {
 
                 if (getMapGuide().get(i).get(j).isNavigable() && j == 0){
-                    Double [] coordinates = new Double[2];
-                    coordinates[0] =  getMapGuide().get(i).get(j).getPosition().getX();
-                    coordinates[1] =  getMapGuide().get(i).get(j).getPosition().getY();
-                    graph.insertVertex(coordinates);
+                    Coordinate  coordinate = new Coordinate();
+                    coordinate.setX(getMapGuide().get(i).get(j).getPosition().getX());
+                    coordinate.setY(getMapGuide().get(i).get(j).getPosition().getY());
+                    graph.insertVertex(coordinate);
                 }
 
-                if (getMapGuide().get(i).get(j).isNavigable() )
+                if (getMapGuide().get(i).get(j).isNavigable() && j != width/nodeSize -1 ){
+                    Coordinate  coordinate = new Coordinate();
+
+                    coordinate.setX(getMapGuide().get(i).get(j+1).getPosition().getX());
+                    coordinate.setY(getMapGuide().get(i).get(j+1).getPosition().getY());
+                    graph.insertVertex(coordinates);
+                    graph.setedge();
+                }
+
+                if (i ==0 ) continue;
+
+                if (getMapGuide().get(i-1).get(j).isNavigable()){
+                    Coordinate  coordinate = new Coordinate();
+                    coordinate.setX(getMapGuide().get(i-1).get(j).getPosition().getX());
+                    coordinate.setY(getMapGuide().get(i-1).get(j).getPosition().getY());
+                    graph.setedge();
+                }
             }
         }
         
@@ -104,11 +120,4 @@ public class GameMap {
         this.mapGuide = mapGuide;
     }
 
-    public Graph<Integer[]> getGraph() {
-        return graph;
-    }
-
-    public void setGraph(Graph<Integer[]> graph) {
-        this.graph = graph;
-    }
 }
