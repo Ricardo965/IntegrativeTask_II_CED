@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 
+import com.example.integrativetask_ii_ced.structure.heap.Heap;
 import com.example.integrativetask_ii_ced.structure.interfaces.ColorType;
 import com.example.integrativetask_ii_ced.structure.interfaces.Igraph;
 import com.example.integrativetask_ii_ced.structure.narytree.NaryTree;
@@ -309,6 +310,44 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
             }
         }
         return distances;
+    }
+
+    public ArrayList<ArrayList<?>> dijkstra (Vertex<V> source){
+        ArrayList<Vertex<V>> previous = new ArrayList<>();
+        ArrayList<Double> distances = new ArrayList<>();
+
+        Heap<Double, Vertex<V>> queue = new Heap<>();
+        for (int i = 0; i < vertexes.size(); i++) {
+            if (vertexes.get(i) != source){
+                distances.add(Double.MAX_VALUE);
+            }else{
+                distances.add(0.0);
+            }
+            previous.add(null);
+            queue.insert(distances.get(i),vertexes.get(i));
+        }
+        queue.buildHeap();
+
+        while (queue.getHeapSize()>0){
+            Vertex<V> u = queue.heapExtractMin();
+            int uPos = vertexes.indexOf(u);
+            for(int i = 0; i < vertexes.size(); i++){
+                if(adjacencyMatrix.get(uPos).get(i) < Double.MAX_VALUE){
+                    double alt = distances.get(uPos) + adjacencyMatrix.get(uPos).get(i);
+                    if(alt < distances.get(i)){
+                        distances.set(i, alt);
+                        previous.set(i, u);
+                        queue.decreasePriority((queue.searchByValue(vertexes.get(i))).getValue(), alt);
+                    }
+                    queue.buildHeap();
+                }
+
+            }
+        }
+        ArrayList<ArrayList<?>> temp = new ArrayList<>();
+        temp.add(previous);
+        temp.add(distances);
+        return temp;
     }
 
 
