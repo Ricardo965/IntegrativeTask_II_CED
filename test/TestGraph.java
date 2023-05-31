@@ -638,4 +638,16 @@ public class TestGraph {
         assertEquals("X Y", chain.trim());
 
     }
+
+    @Test
+    public void dfsForOneNodeSearch3AM(){
+        setUpStage4NoDirectedAM();
+        List<String> list = graphAM.dfsSingleNode("V","W");
+        String chain = "";
+        for (String a: list
+        ) {
+            chain += a +" ";
+        }
+        assertEquals("W S R V", chain.trim());
+    }
 }
