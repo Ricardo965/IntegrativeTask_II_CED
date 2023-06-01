@@ -217,7 +217,7 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
     }
 
 
-    public List<V> bfsForOneNode(V from, V to ){
+    public Stack<V> bfsForOneNode(V from, V to ){
 
 
         Vertex fromVertex  = searchVertex(from);
@@ -381,7 +381,7 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
         else {
             for (Vertex<V> vertex: getVertexes()
                  ) {
-                if (vertex.getValue().equals(values)) return vertex;
+                if (values.equals(vertex.getValue())) return vertex;
             }
         }
         return null;

@@ -24,6 +24,9 @@ public abstract class  Obstacle implements Drawable {
         this.hitBox = new HitBox(x-(width/2), y-(height/2), x+(width/2), y+(height/2));
     }
 
+    public Obstacle() {
+    }
+
     @Override
     public void draw(GraphicsContext gc) {
 

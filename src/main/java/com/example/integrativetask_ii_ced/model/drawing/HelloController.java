@@ -2,6 +2,7 @@ package com.example.integrativetask_ii_ced.model.drawing;
 
 import com.example.integrativetask_ii_ced.model.entities.*;
 import com.example.integrativetask_ii_ced.model.entities.mob.Boss;
+import com.example.integrativetask_ii_ced.model.entities.mob.MobilePump;
 import com.example.integrativetask_ii_ced.model.entities.objects.functional.Bullet;
 import com.example.integrativetask_ii_ced.model.entities.objects.Obstacle;
 import com.example.integrativetask_ii_ced.model.entities.objects.functional.PressurePlate;
@@ -25,29 +26,45 @@ public class HelloController implements Initializable, Runnable{
     @FXML
     private Canvas canvas;
     private GraphicsContext gc;
-    public static final Player character = new Player(50, 100, 70, 70,200);
+    public static Player character;
+
+    public static GameMap gameMap = new GameMap(1200,720, 80,3);
     public static Boss finalBoss;
     public static CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
     private final Cursor customCursor = new ImageCursor(new Image("file:src/main/resources/images/Cursor/nt_normal.png"));
     public static CopyOnWriteArrayList<PressurePlate> pressurePlates = new CopyOnWriteArrayList<>();
 
+    public static CopyOnWriteArrayList<MobilePump> mobilePumps = new CopyOnWriteArrayList<>();
+
 
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        gameMap.initialFillingOfMapWithNodesAndCoordinates();
+        gameMap.creatingNotNavigableObstacles();
+        gameMap.establishGraphMapRepresentationForMinimumPaths();
+
+        for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
+            if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
+                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,10000);
+                break;
+            }
+        }
+
         canvas.setCursor(customCursor);
         gc = canvas.getGraphicsContext2D();
         canvas.setFocusTraversable(true);
         canvas.setOnKeyPressed(character::pressKey);
         canvas.setOnKeyReleased(character::releasedKey);
-        finalBoss = new Boss(canvas.getWidth()/2, canvas.getHeight()/2, 120, 170, 100);
-        pressurePlates.add(new PressurePlate(100, 100));
-        pressurePlates.add(new PressurePlate(200, 200));
-        pressurePlates.add(new PressurePlate(300, 300));
-        pressurePlates.add(new PressurePlate(400, 400));
+        finalBoss = new Boss(canvas.getWidth()/2, canvas.getHeight()/2, 240, 240, 100);
         canvas.setOnMouseMoved(this::onMouseMoved);
+
+
+
         new Thread(character).start();
         new Thread(finalBoss).start();
         new Thread(this).start();
+
+
         draw();
     }
 
@@ -59,6 +76,14 @@ public class HelloController implements Initializable, Runnable{
                     bullets.remove(bullet);
                 }
             }
+
+            for (MobilePump mobilePump: mobilePumps
+                 ) {
+                if ( mobilePump.outside(canvas.getHeight(), canvas.getWidth()) || mobilePump.giveDamage(character) ){
+                    mobilePumps.remove(mobilePump);
+                }
+            }
+
             for(PressurePlate pressurePlate : pressurePlates){
                 pressurePlate.isPressed(character);
             }
@@ -78,17 +103,29 @@ public class HelloController implements Initializable, Runnable{
                     if ( character.getLife() > 0 ){
                         character.draw(gc);
                     }
-                    gc.setFill(Color.BLACK);
-                    gc.fillRect(100, 100, 80, 80);
+
                     for (Bullet bullet : bullets) {
                         bullet.draw(gc);
                     }
                     for(PressurePlate pressurePlate : pressurePlates){
                         pressurePlate.draw(gc);
                     }
+
+                    for (int i = 0; i < gameMap.getMapGuide().size() ; i++) {
+                        for (int j = 0; j < gameMap.getMapGuide().get(i).size(); j++) {
+                            gameMap.getMapGuide().get(i).get(j).draw(gc);
+                        }
+                    }
+                    finalBoss.draw(gc);
+                    for (MobilePump mobilePump: mobilePumps
+                         ) {
+                        mobilePump.draw(gc);
+                    }
+                    character.draw(gc);
                 });
 
                 character.movement();
+
                 try {
                     Thread.sleep(16);
                 } catch (Exception e) {
@@ -109,5 +146,67 @@ public class HelloController implements Initializable, Runnable{
         );
     }
 
+    public Canvas getCanvas() {
+        return canvas;
+    }
 
+    public void setCanvas(Canvas canvas) {
+        this.canvas = canvas;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public GraphicsContext getGc() {
+        return gc;
+    }
+
+    public void setGc(GraphicsContext gc) {
+        this.gc = gc;
+    }
+
+    public static GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public static void setGameMap(GameMap gameMap) {
+        HelloController.gameMap = gameMap;
+    }
+
+    public static Boss getFinalBoss() {
+        return finalBoss;
+    }
+
+    public static void setFinalBoss(Boss finalBoss) {
+        HelloController.finalBoss = finalBoss;
+    }
+
+    public static CopyOnWriteArrayList<Bullet> getBullets() {
+        return bullets;
+    }
+
+    public static void setBullets(CopyOnWriteArrayList<Bullet> bullets) {
+        HelloController.bullets = bullets;
+    }
+
+    public Cursor getCustomCursor() {
+        return customCursor;
+    }
+
+    public static CopyOnWriteArrayList<PressurePlate> getPressurePlates() {
+        return pressurePlates;
+    }
+
+    public static void setPressurePlates(CopyOnWriteArrayList<PressurePlate> pressurePlates) {
+        HelloController.pressurePlates = pressurePlates;
+    }
+
+    public static CopyOnWriteArrayList<MobilePump> getMobilePumps() {
+        return mobilePumps;
+    }
+
+    public static void setMobilePumps(CopyOnWriteArrayList<MobilePump> mobilePumps) {
+        HelloController.mobilePumps = mobilePumps;
+    }
 }

@@ -3,46 +3,89 @@ package com.example.integrativetask_ii_ced.model.drawing;
 
 import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class GameMap {
 
     ArrayList<ArrayList<MapNode>> mapGuide;
-    AdjencyListGraph<Double[]> graph;
+    AdjencyListGraph<Coordinate> graph;
+
+    private double width;
+    private double height;
+
+    private  double nodeSize;
+
+    private double chunkSize;
+
     
-    public GameMap() {
+
+
+
+    public GameMap( double width, double height, double nodeSize, double chunkSize) {
+        this.width = width;
+        this.height = height;
+        this.nodeSize = nodeSize;
         this.mapGuide = new ArrayList<>();
         this.graph=  new AdjencyListGraph<>(false,false);
+        this.chunkSize = chunkSize;
     }
-    
-    public void initialFillingOfMapWithNodesAndCoordinates( double nodeSize, double width, double height){
-        double yPosition = 0;
+
+    public void initialFillingOfMapWithNodesAndCoordinates(){
+        double yPosition = -40;
 
         for (int i = 0; i < height/nodeSize; i++) {
 
-            yPosition+= nodeSize / 2;
-            double xPosition= 0;
+            yPosition+= nodeSize;
+            double xPosition= -40;
             mapGuide.add(new ArrayList<MapNode>());
 
             for (int j = 0; j < width/nodeSize ; j++) {
-                xPosition+= nodeSize /2;
-                boolean isNavigable = (i<6 || i>8) && (j<3 || j >5)? true: false;
-                MapNode node =  new MapNode(xPosition, yPosition, isNavigable);
+                xPosition+= nodeSize ;
+
+                MapNode node =  new MapNode(xPosition, yPosition, true);
                 getMapGuide().get(i).add(node);
             }
         }
     }
 
-    public void creatingNotNavigableObstacles(int chunkSize, double nodeSize, double width, double height){
+
+    public MapNode associateMapNode(double x, double y){
+        MapNode temporal = new MapNode();
+        double distance = Double.MAX_VALUE;
+
+        for (int i = 0; i < height/nodeSize ; i++) {
+            for (int j = 0; j < width / nodeSize; j++) {
+                MapNode actual = getMapGuide().get(i).get(j);
+                if (!actual.navigable) continue;
+                double pitagoras =
+                        Math.sqrt(Math.pow(actual.getPosition().getX() - x ,2) +
+                                Math.pow(actual.getPosition().getY() - y,2));
+                if (pitagoras <= distance) {
+                    temporal = actual;
+                    distance = pitagoras;
+                }
+            }
+        }
+        return temporal;
+    }
+
+    public Stack<Coordinate> shortestPath(Coordinate from, Coordinate to){
+
+        return graph.bfsForOneNode(from, to);
+
+    }
+
+    public void creatingNotNavigableObstacles( ){
 
         Random random  =new Random();
         for (int i = 0; i < height/nodeSize; i+=chunkSize) {
-            int yRange = i + chunkSize;
-            for (int j = 0; j < width; j+=chunkSize) {
+            double yRange = i + chunkSize;
+            for (int j = 0; j < width / nodeSize; j+=chunkSize) {
+
+                if ((i >2 && i< 6) && (j<9 && j>5)) continue;
                 
-                int rowNodeSelection = random.nextInt(i, yRange);
-                int columnNodeSelection = random.nextInt(j, j+chunkSize);
+                int rowNodeSelection = random.nextInt(i, (int) yRange);
+                int columnNodeSelection = random.nextInt(j, j+ (int)chunkSize);
                 getMapGuide().get(rowNodeSelection).get(columnNodeSelection).setNavigable(false);
 
                 int blocks = 1;
@@ -56,7 +99,7 @@ public class GameMap {
                             }
                             break;
                         case 1: // down
-                            if (rowNodeSelection + 1 <= yRange) {
+                            if (rowNodeSelection + 1 < yRange) {
                                 getMapGuide().get(rowNodeSelection + 1).get(columnNodeSelection).setNavigable(false);
                                 blocks++;
                             }
@@ -68,7 +111,7 @@ public class GameMap {
                             }
                             break;
                         case 3: // Right
-                            if (columnNodeSelection +1 <= j + chunkSize) {
+                            if (columnNodeSelection +1 < j + chunkSize) {
                                 getMapGuide().get(rowNodeSelection ).get(columnNodeSelection + 1).setNavigable(false);
                                 blocks++;
                             }
@@ -81,36 +124,134 @@ public class GameMap {
         }
     }
     
-    public void establishGraphMapRepresentationForMinimumPaths(double nodeSize, double width, double height){
+    public void establishGraphMapRepresentationForMinimumPaths(){
 
+        Set<Coordinate> coordinateSet = new HashSet<>();
         for (int i = 0; i < height/nodeSize ; i++) {
             for (int j = 0; j < width/nodeSize; j++) {
 
-                if (getMapGuide().get(i).get(j).isNavigable() && j == 0){
-                    Double [] coordinates = new Double[2];
-                    coordinates[0] =  getMapGuide().get(i).get(j).getPosition().getX();
-                    coordinates[1] =  getMapGuide().get(i).get(j).getPosition().getY();
-                    graph.insertVertex(coordinates);
+                Coordinate actualNode = new Coordinate();
+                actualNode.setX(getMapGuide().get(i).get(j).getPosition().getX());
+                actualNode.setY(getMapGuide().get(i).get(j).getPosition().getY());
+
+                if (getMapGuide().get(i).get(j).isNavigable() && !coordinateSet.contains(actualNode) ){
+                    graph.insertVertex(actualNode);
+                    coordinateSet.add(actualNode);
                 }
 
-                if (getMapGuide().get(i).get(j).isNavigable() )
+                if (getMapGuide().get(i).get(j).isNavigable() && j != width/nodeSize -1 ){
+
+                    if (getMapGuide().get(i).get(j+1).isNavigable()){
+
+                        Coordinate coordinate = new Coordinate();
+                        coordinate.setX(getMapGuide().get(i).get(j+1).getPosition().getX());
+                        coordinate.setY(getMapGuide().get(i).get(j+1).getPosition().getY());
+                        graph.insertVertex(coordinate);
+                        coordinateSet.add(coordinate);
+                        graph.insertEdge(actualNode,coordinate);
+
+                    }
+                }
+
+                if (i == 0) continue;
+
+                if (getMapGuide().get(i).get(j).isNavigable() && getMapGuide().get(i-1).get(j).isNavigable()) {
+
+                    Coordinate coordinate = new Coordinate();
+                    coordinate.setX(getMapGuide().get(i-1).get(j).getPosition().getX());
+                    coordinate.setY(getMapGuide().get(i-1).get(j).getPosition().getY());
+
+                    if (!coordinateSet.contains(coordinate)){
+                        graph.insertVertex(coordinate);
+                        coordinateSet.add(coordinate);
+                    }
+                        graph.insertEdge(actualNode,coordinate);
+
+                    }
+                }
             }
         }
-        
+
+
+    public boolean mapCollision(HitBox hitBox){
+
+        Coordinate coordinateUp= new Coordinate(hitBox.getX0(), hitBox.getY0());
+        Coordinate coordinateDown = new Coordinate(hitBox.getX1(), hitBox.getY1());
+        List<Coordinate> coordinates = new ArrayList<>();
+
+        coordinates.add( coordinateDown);
+        coordinates.add( coordinateUp);
+        coordinates.add(new Coordinate(hitBox.getX1(),hitBox.getY0()));
+        coordinates.add(new Coordinate(hitBox.getX0(),hitBox.getY1()));
+
+        boolean isCollision = false;
+        for (Coordinate coordinate: coordinates
+             ) {
+            int yPosition = (int)  Math.floor(coordinate.getY() / getNodeSize());
+            int xPosition  = (int) Math.floor(coordinate.getX() / getNodeSize());
+
+            isCollision = !getMapGuide().get(yPosition).get(xPosition).isNavigable() || isCollision;
+            if(isCollision == true) return true;
+        }
+        return false;
+    }
+
+
+    public boolean mapLimit(HitBox hitBox){
+
+        if (hitBox.getX0() < 3 || hitBox.getY0()< 3
+                || hitBox.getX1() >getWidth()-3 || hitBox.getY1()> getHeight()-3 ) return true;
+        return false;
+
+
     }
     public ArrayList<ArrayList<MapNode>> getMapGuide() {
         return mapGuide;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 
     public void setMapGuide(ArrayList<ArrayList<MapNode>> mapGuide) {
         this.mapGuide = mapGuide;
     }
 
-    public AdjencyListGraph<Integer[]> getGraph() {
+    public AdjencyListGraph<Coordinate> getGraph() {
         return graph;
     }
 
-    public void setGraph(AdjencyListGraph<Integer[]> graph) {
+    public void setGraph(AdjencyListGraph<Coordinate> graph) {
         this.graph = graph;
     }
+
+    public double getNodeSize() {
+        return nodeSize;
+    }
+
+    public void setNodeSize(double nodeSize) {
+        this.nodeSize = nodeSize;
+    }
+
+    public double getChunkSize() {
+        return chunkSize;
+    }
+
+    public void setChunkSize(double chunkSize) {
+        this.chunkSize = chunkSize;
+    }
+
+
 }

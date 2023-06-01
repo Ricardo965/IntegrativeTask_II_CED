@@ -26,11 +26,18 @@ public class Boss extends Avatar implements Runnable{
 
     @Override
     public void run() {
-        while (true) {
+        while (HelloController.character.getLife()>0) {
             try {
-                if(HelloController.character.getLife()>0){
-                    shoot();
-                }
+
+                    double diffX = HelloController.character.getPosition().getX() - this.position.getX();
+                    double diffY = HelloController.character.getPosition().getY() - this.position.getY();
+                    Vector diff = new Vector(diffX, diffY);
+                    diff.normalize();
+                    diff.setMag(10);
+                    MobilePump mobilePump = new MobilePump(getPosition().getX(),getPosition().getY(),1,200);
+                    new Thread(mobilePump).start();
+                    HelloController.mobilePumps.add(mobilePump);
+
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();

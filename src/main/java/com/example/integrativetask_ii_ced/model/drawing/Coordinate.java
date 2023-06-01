@@ -1,5 +1,7 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
+import java.util.Objects;
+
 public class Coordinate implements Comparable<Coordinate> {
 
     private double x;
@@ -34,6 +36,11 @@ public class Coordinate implements Comparable<Coordinate> {
 
         Coordinate coordinate = (Coordinate) obj;
         return this.x== coordinate.getX() && this.y == coordinate.getY();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x,y);
     }
 
     @Override
