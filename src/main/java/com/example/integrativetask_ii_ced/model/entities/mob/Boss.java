@@ -9,10 +9,11 @@ import javafx.scene.image.Image;
 
 public class Boss extends Avatar implements Runnable{
     private Image idle;
+    private String uri = "file:src/main/resources/images/FinalBoss/Boss.png";
+
     public Boss(double x, double y, double width, double height, double life){
 
         super(x, y, width, height, life);
-        String uri = "file:src/main/resources/images/FinalBoss/Boss.png";
         idle = new Image(uri);
 
     }
@@ -26,7 +27,7 @@ public class Boss extends Avatar implements Runnable{
 
     @Override
     public void run() {
-        while (HelloController.character.getLife()>0) {
+        while (HelloController.character.getLife()>0 && this.getLife()>0) {
             try {
 
                     double diffX = HelloController.character.getPosition().getX() - this.position.getX();
@@ -52,5 +53,11 @@ public class Boss extends Avatar implements Runnable{
         diff.setMag(10);
         Bullet bullet = new Bullet(position.getX(), position.getY(), 10, 10, 1, diff, 25);
         HelloController.bullets.add(bullet);
+    }
+
+    public void died() {
+        uri = "file:src/main/resources/images/FinalBoss/BossDied.png";
+        idle = new Image(uri);
+        life = -1;
     }
 }
