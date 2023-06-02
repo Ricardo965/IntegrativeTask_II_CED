@@ -2,13 +2,14 @@ package com.example.integrativetask_ii_ced.model.drawing;
 
 
 import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
-
+import com.example.integrativetask_ii_ced.structure.graph.AdjacencyMatrixGraph;
 import java.util.*;
 
 public class GameMap {
 
-    ArrayList<ArrayList<MapNode>> mapGuide;
-    AdjencyListGraph<Coordinate> graph;
+    private ArrayList<ArrayList<MapNode>> mapGuide;
+     private AdjencyListGraph<Coordinate> graph;
+    private AdjacencyMatrixGraph<Coordinate> matrixGraph;
 
     private double width;
     private double height;
@@ -28,6 +29,7 @@ public class GameMap {
         this.mapGuide = new ArrayList<>();
         this.graph=  new AdjencyListGraph<>(false,false);
         this.chunkSize = chunkSize;
+        this.matrixGraph=  new AdjacencyMatrixGraph<>(false,false);
     }
 
     public void initialFillingOfMapWithNodesAndCoordinates(){
@@ -69,17 +71,26 @@ public class GameMap {
         return temporal;
     }
 
-    public Stack<Coordinate> shortestPathUsingBFS(Coordinate from, Coordinate to){
+    public Stack<Coordinate> shortestPathUsingListAdjacencyBFS(Coordinate from, Coordinate to){
 
         return graph.bfsForOneNode(from, to);
 
     }
 
-    public Stack<Coordinate> shortestPathUsingDFS(Coordinate from, Coordinate to){
+    public Stack<Coordinate> shortestPathUsingListAdjacencyDFS(Coordinate from, Coordinate to){
 
         return graph.dfsForOneNode(from, to);
-
     }
+
+    public Stack<Coordinate> shortestPathUsingMatrixAdjacencyBFS(Coordinate from, Coordinate to){
+
+        return matrixGraph.bfsSingleNode(from, to);
+    }
+    public Stack<Coordinate> shortestPathUsingMatrixAdjacencyDFS(Coordinate from, Coordinate to){
+
+        return matrixGraph.dfsForOneNode(from, to);
+    }
+
 
     public void creatingNotNavigableObstacles( ){
 
@@ -179,6 +190,55 @@ public class GameMap {
         }
 
 
+    public void establishMatrixGraphMapRepresentationForMinimumPaths(){
+        Set<Coordinate> coordinateSet = new HashSet<>();
+        for (int i = 0; i < height/nodeSize ; i++) {
+            for (int j = 0; j < width/nodeSize; j++) {
+
+                Coordinate actualNode = new Coordinate();
+                actualNode.setX(getMapGuide().get(i).get(j).getPosition().getX());
+                actualNode.setY(getMapGuide().get(i).get(j).getPosition().getY());
+
+                if (getMapGuide().get(i).get(j).isNavigable() && !coordinateSet.contains(actualNode) ){
+                    matrixGraph.insertVertex(actualNode);
+                    coordinateSet.add(actualNode);
+                }
+
+                if (getMapGuide().get(i).get(j).isNavigable() && j != width/nodeSize -1 ){
+
+                    if (getMapGuide().get(i).get(j+1).isNavigable()){
+
+                        Coordinate coordinate = new Coordinate();
+                        coordinate.setX(getMapGuide().get(i).get(j+1).getPosition().getX());
+                        coordinate.setY(getMapGuide().get(i).get(j+1).getPosition().getY());
+                        matrixGraph.insertVertex(coordinate);
+                        coordinateSet.add(coordinate);
+                        matrixGraph.insertEdge(actualNode,coordinate);
+
+                    }
+                }
+
+                if (i == 0) continue;
+
+                if (getMapGuide().get(i).get(j).isNavigable() && getMapGuide().get(i-1).get(j).isNavigable()) {
+
+                    Coordinate coordinate = new Coordinate();
+                    coordinate.setX(getMapGuide().get(i-1).get(j).getPosition().getX());
+                    coordinate.setY(getMapGuide().get(i-1).get(j).getPosition().getY());
+
+                    if (!coordinateSet.contains(coordinate)){
+                        matrixGraph.insertVertex(coordinate);
+                        coordinateSet.add(coordinate);
+                    }
+                    matrixGraph.insertEdge(actualNode,coordinate);
+
+                }
+            }
+        }
+
+
+    }
+
     public boolean mapCollision(HitBox hitBox){
 
         Coordinate coordinateUp= new Coordinate(hitBox.getX0(), hitBox.getY0());
@@ -259,6 +319,11 @@ public class GameMap {
         this.chunkSize = chunkSize;
     }
 
+    public AdjacencyMatrixGraph<Coordinate> getMatrixGraph() {
+        return matrixGraph;
+    }
 
-
+    public void setMatrixGraph(AdjacencyMatrixGraph<Coordinate> matrixGraph) {
+        this.matrixGraph = matrixGraph;
+    }
 }

@@ -41,15 +41,17 @@ public class HelloController implements Initializable, Runnable{
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
 
-        setMatrixBased(false);
+        setMatrixBased(true);
         gameMap.initialFillingOfMapWithNodesAndCoordinates();
         gameMap.creatingNotNavigableObstacles();
-        gameMap.establishGraphMapRepresentationForMinimumPaths();
+
+        if (isMatrixBased()) gameMap.establishMatrixGraphMapRepresentationForMinimumPaths();
+        else gameMap.establishGraphMapRepresentationForMinimumPaths();
 
 
         for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
             if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
-                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,10000);
+                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,3000);
                 break;
             }
         }
