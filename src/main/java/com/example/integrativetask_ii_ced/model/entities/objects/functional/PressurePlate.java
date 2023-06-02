@@ -25,6 +25,10 @@ public class PressurePlate extends Obstacle {
         gc.fillRect(position.getX() - (width / 2), position.getY() - (height/2), getWidth(), getHeight());
     }
 
+    public boolean isPressed() {
+        return isPressed;
+    }
+
     public boolean isPressed(Avatar avatar) {
         if(hitBox.comparePosition(avatar.getHitBox())){
             isPressed = true;

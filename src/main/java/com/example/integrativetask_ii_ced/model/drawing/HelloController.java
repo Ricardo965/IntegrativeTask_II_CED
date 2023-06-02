@@ -72,7 +72,7 @@ public class HelloController implements Initializable, Runnable{
 
         for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
             if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
-                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,10000);
+                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,100000);
                 break;
             }
         }
@@ -115,7 +115,26 @@ public class HelloController implements Initializable, Runnable{
                 pressurePlates.get(i).isPressed(character);
             }
 
+            if ( everyArePresed() ){
+                finalBoss.died();
+            }
+
+
         }
+    }
+
+    public boolean everyArePresed(){
+        boolean allPressed = true;
+        if(pressurePlates.size() == 0){
+            return false;
+        }
+        for (int i=0 ; i<pressurePlates.size() ; i++){
+            if (!pressurePlates.get(i).isPressed()){
+                allPressed = false;
+                break;
+            }
+        }
+        return allPressed;
     }
 
 
@@ -149,9 +168,7 @@ public class HelloController implements Initializable, Runnable{
                     for (int i=0; i< mobilePumps.size() ; i++) {
                         mobilePumps.get(i).draw(gc);
                     }
-                    if ( character.getLife() > 0 ){
-                        character.draw(gc);
-                    }
+                    character.draw(gc);
 
                 });
 

@@ -16,6 +16,8 @@ public class Player extends Avatar implements Runnable {
 
     private Image[] idle;
     private Image[] run;
+
+    private Image[] died;
     private int frame = 0;
 
     private boolean isFacingRight = true;
@@ -39,10 +41,19 @@ public class Player extends Avatar implements Runnable {
             String uri = "file:src/main/resources/images/Character/run/player-run"+i+".png";
             run[i-1] = new Image(uri);
         }
+        died = new Image[3];
+        for(int i=1 ; i<=3 ; i++) {
+            String uri = "file:src/main/resources/images/Character/died/player-died"+i+".png";
+            died[i-1] = new Image(uri);
+        }
     }
 
     @Override
     public void draw(GraphicsContext gc) {
+        if ( life<1 ){
+            gc.drawImage(died[frame], isFacingRight ? position.getX() - (width / 2) : position.getX() + (width / 2), position.getY() - (width / 2), isFacingRight ? width : -width, height);
+            return;
+        }
         hitBox.refreshHitBox(position.getX()-(width/2), position.getY()-(height/2), position.getX()+(width/2), position.getY()+(height/2));
         gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
         gc.drawImage((isMoving() ? run[frame] : idle[frame]), isFacingRight ? position.getX() - (width / 2) : position.getX() + (width / 2), position.getY() - (width / 2), isFacingRight ? width : -width, height);
@@ -51,8 +62,19 @@ public class Player extends Avatar implements Runnable {
     @Override
     public void run() {
         while (true) {
-            frame = (frame + 1) % 6;
-            try {
+            if ( life<1 ){
+                frame = 0;
+                if ( frame != 2 ){
+                    frame = (frame + 1) % 3;
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                frame = (frame + 1) % 6;
+            }try {
                 Thread.sleep(80);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -99,6 +121,13 @@ public class Player extends Avatar implements Runnable {
 
 
     public void pressKey(KeyEvent event){
+        if ( life<1 ){
+            keyA = false;
+            keyW = false;
+            keyS = false;
+            keyD = false;
+            return;
+        }
         switch (event.getCode()) {
             case A -> {
                 keyA = true;
@@ -115,7 +144,14 @@ public class Player extends Avatar implements Runnable {
         }
     }
 
-    public void releasedKey(KeyEvent event){
+    public void  releasedKey(KeyEvent event){
+        if ( life<1 ){
+            keyA = false;
+            keyW = false;
+            keyS = false;
+            keyD = false;
+            return;
+        }
         switch (event.getCode()) {
             case A -> {
                 keyA = false;
