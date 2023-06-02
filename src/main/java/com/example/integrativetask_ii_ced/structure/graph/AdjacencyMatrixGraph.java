@@ -1,8 +1,6 @@
 package com.example.integrativetask_ii_ced.structure.graph;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 
 import com.example.integrativetask_ii_ced.structure.heap.Heap;
@@ -53,6 +51,7 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
     public boolean insertEdge(V fromValue, V toValue) {
         Vertex<V> from = searchVertex(fromValue);
         Vertex<V> to = searchVertex(toValue);
+
         if(!vertexes.contains(from) || !vertexes.contains(to)) return false;
         int v1Pos = vertexes.indexOf(from);
         int v2Pos = vertexes.indexOf(to);
@@ -204,7 +203,7 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
     }
 
 
-    public ArrayList<V> bfsSingleNode(V from , V to) {
+    public Stack<V> bfsSingleNode(V from , V to) {
         if (getVertexes().isEmpty()) return null;
         Vertex<V> fromVertex  = searchVertex(from);
         Vertex<V> toVertex  = searchVertex(to);
@@ -237,54 +236,104 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
             u.setColor(ColorType.BLACK);
         }
 
-        ArrayList<V> path = new ArrayList<>();
+        Stack path = new Stack();
         Vertex<V> current = toVertex;
         while(current != null){
             path.add(current.getValue());
             current = current.getFather();
         }
+
+
         return path;
 
     }
 
-    public ArrayList<V> dfsSingleNode(V from, V to) {
-        if (getVertexes().isEmpty()) return null;
-        Vertex<V> fromVertex  = searchVertex(from);
-        Vertex<V> toVertex  = searchVertex(to);
+    public Stack<V> dfsForOneNode(V from, V to) {
+        if (dfs().size() >1) return null;
+        NaryTree naryTree = dfs().get(0);
+        Stack fromPath = new Stack<>();
+        fromPath = pathToCeil(searchVertex(from), fromPath);
 
-        for (Vertex<V> u: vertexes) {
-            u.setColor(ColorType.WHITE);
-            u.setFather(null);
-        }
+        Stack toPath = new Stack<>();
+        toPath = pathToCeil(searchVertex(to), toPath);
 
-        NaryTree<V> naryTree = new NaryTree<>();
-        naryTree.setRoot(new Node<V>(fromVertex.getValue()));
-        dfsVisitSingleNode(fromVertex, naryTree);
+        Queue result = new LinkedList();
 
-        ArrayList<V> path = new ArrayList<>();
-        Vertex<V> current = toVertex;
-        while(current != null){
-            path.add(current.getValue());
-            current = current.getFather();
-        }
-        return path;
-    }
+        for (int i = 0; i <fromPath.size(); i++) {
+            if (toPath.contains(fromPath.get(i))){
+                if (fromPath.get(i).equals(from) || fromPath.get(i).equals(to)){
+                    boolean isFound = false;
+                    if (toPath.size() > fromPath.size()){
+                        int j = toPath.size()-1;
+                        while(!toPath.isEmpty()) {
+                            if ((toPath.get(j).equals(from) || toPath.get(j).equals(to))) isFound =true;
+                            if (isFound) result.add(toPath.pop());
+                            else toPath.pop();
+                            j--;
+                        }
+                    }else {
+                        int j = fromPath.size()-1;
+                        while(!fromPath.isEmpty()) {
+                            if ((fromPath.get(j).equals(from) || fromPath.get(j).equals(to))) isFound =true;
+                            if (isFound) result.add(fromPath.pop());
+                            else fromPath.pop();
+                            j--;
+                        }
+                    }
+                } else {
 
-    public void dfsVisitSingleNode(Vertex<V> from, NaryTree<V> tree) {
-        from.setColor(ColorType.GRAY);
+                    V value = (V) fromPath.get(i);
+                    Stack temporal = new Stack<>();
 
-        int uPos = vertexes.indexOf(from);
-        for(int i = 0; i < adjacencyMatrix.get(uPos).size(); i++) {
-            if(adjacencyMatrix.get(uPos).get(i) < Double.MAX_VALUE) {
-                if(vertexes.get(i).getColor() == ColorType.WHITE){
-                    vertexes.get(i).setFather(from);
-                    tree.insertNode(vertexes.get(i).getValue(), from.getValue());
-                    dfsVisitSingleNode(vertexes.get(i),tree);
+                    for (int j = 0; j < fromPath.size() ; j++) {
+                        if (value.equals(fromPath.get(j))) break;
+                        temporal.add(fromPath.get(j));
+                    }
+
+                    boolean isFound = false;
+                    int j  = toPath.size()-1;
+                    while (!toPath.isEmpty()){
+                        if (toPath.get(j).equals(value)) isFound = true;
+                        if (isFound) temporal.add(toPath.pop());
+                        else toPath.pop();
+                        j--;
+                    }
+
+                    while(!temporal.isEmpty()){
+                        result.add(temporal.pop());
+                    }
                 }
+                break;
             }
         }
-        from.setColor(ColorType.BLACK);
+
+        List list = (List) result;
+
+        Stack stackResult = new Stack<>();
+
+        if (list.get(0).equals(from)){
+
+            for (int i = list.size()-1;i > -1; i--) {
+                stackResult.add(list.get(i));
+            }
+        }else {
+            for (int i = 0; i < result.size(); i++) {
+                stackResult.add(list.get(i));
+            }
+        }
+
+
+
+        return stackResult;
+
     }
+    private Stack<V> pathToCeil (Vertex<V> current, Stack<V> stack){
+        if (current == null) return  stack;
+        stack.add(current.getValue());
+        return pathToCeil(current.getFather(),stack);
+    }
+
+
 
     public double[][] floydWarshall() {
         double[][] distances = new double[vertexes.size()][vertexes.size()];
@@ -346,6 +395,7 @@ public class AdjacencyMatrixGraph <V extends Comparable<V>> implements Igraph<V>
         ArrayList<ArrayList<?>> temp = new ArrayList<>();
         temp.add(previous);
         temp.add(distances);
+
         return temp;
     }
 

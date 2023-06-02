@@ -29,26 +29,27 @@ public class MobilePump extends Avatar implements Runnable {
 
         if (HelloController.isMatrixBased()){ //Matrix based context.
             // Here we are using BFS
-            if (mobilePumpCounter > 13){
 
+            if(mobilePumpCounter < 20){
 
+                path = HelloController.gameMap.shortestPathUsingMatrixAdjacencyBFS(from, to);
 
-            }else {   // Here we are using BFS
+            }else {   // Here we are using DFS
 
+                path = HelloController.gameMap.shortestPathUsingMatrixAdjacencyDFS(from, to);
 
             }
-
 
         }else {  //Adjacency list based context.
 
             // Here we are using BFS
-            if (mobilePumpCounter > 13){
+            if (mobilePumpCounter < 20){
 
-                path = HelloController.gameMap.shortestPathUsingBFS(from, to);
+                path = HelloController.gameMap.shortestPathUsingListAdjacencyBFS(from, to);
 
             }else {    // Here we are using DFS
 
-                path = HelloController.gameMap.shortestPathUsingDFS(from, to);
+                path = HelloController.gameMap.shortestPathUsingListAdjacencyDFS(from, to);
 
             }
 
