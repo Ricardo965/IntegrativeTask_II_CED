@@ -47,7 +47,7 @@ public class HelloController implements Initializable, Runnable{
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Bienvenido al juego!");
         alert.setHeaderText("Elección de grafo");
-        alert.setContentText("Escoge el tipo de grafo: ");
+        alert.setContentText("Escoge el tipo de grafo: \n RECUERDA QUE LAS PLACAS DEBES PRESIONAR LAS PLACAS DE PRESION PARA ELIMINAR AL BOSS MARLON");
         ButtonType okButton = new ButtonType("Lista de adyacencia");
         ButtonType cancelButton = new ButtonType("Matriz de adyacencia");
 
