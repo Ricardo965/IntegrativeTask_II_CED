@@ -1,9 +1,11 @@
 package com.example.integrativetask_ii_ced.model.drawing;
 
 
+import com.example.integrativetask_ii_ced.model.entities.objects.functional.PressurePlate;
 import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
 import com.example.integrativetask_ii_ced.structure.graph.AdjacencyMatrixGraph;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GameMap {
 
@@ -31,6 +33,28 @@ public class GameMap {
         this.chunkSize = chunkSize;
         this.matrixGraph=  new AdjacencyMatrixGraph<>(false,false);
     }
+
+    public CopyOnWriteArrayList<PressurePlate> creatingPressurePlates(CopyOnWriteArrayList<PressurePlate> pressurePlates) {
+        Random random = new Random();
+        for (int k = 0; k < 3; k++) {
+            for (int i = 2; i < height / nodeSize; i += chunkSize+4) {
+                double yRange = i + chunkSize;
+                for (int j = 4; j < width / nodeSize; j += chunkSize+3) {
+                    int rowNodeSelection = random.nextInt((int) yRange - i) + i;
+                    int columnNodeSelection = random.nextInt((int) chunkSize) + j;
+                    if (getMapGuide().get(rowNodeSelection).get(columnNodeSelection).isNavigable()) {
+                        pressurePlates.add(new PressurePlate(
+                                getMapGuide().get(rowNodeSelection).get(columnNodeSelection).getPosition().getX(),
+                                getMapGuide().get(rowNodeSelection).get(columnNodeSelection).getPosition().getY()
+                        ));
+                    }
+                    if ( pressurePlates.size() == 4) return pressurePlates;
+                }
+            }
+        }
+        return pressurePlates;
+    }
+
 
     public void initialFillingOfMapWithNodesAndCoordinates(){
         double yPosition = -40;

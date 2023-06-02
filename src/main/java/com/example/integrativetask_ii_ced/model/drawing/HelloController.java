@@ -12,10 +12,17 @@ import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HelloController implements Initializable, Runnable{
@@ -40,8 +47,22 @@ public class HelloController implements Initializable, Runnable{
 
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Welcome to the game!");
+        alert.setHeaderText("Welcome to the game!");
+        alert.setContentText("Choose a algorithm!");
+        ButtonType okButton = new ButtonType("Lista de adyacencia");
+        ButtonType cancelButton = new ButtonType("Matriz de adyacencia");
 
-        setMatrixBased(true);
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == okButton) {
+            setMatrixBased(false);
+        } else {
+            setMatrixBased(true);
+
+        }
         gameMap.initialFillingOfMapWithNodesAndCoordinates();
         gameMap.creatingNotNavigableObstacles();
 
@@ -69,7 +90,8 @@ public class HelloController implements Initializable, Runnable{
         new Thread(character).start();
         new Thread(finalBoss).start();
         new Thread(this).start();
-
+        pressurePlates = gameMap.creatingPressurePlates(pressurePlates);
+        System.out.println(Arrays.toString(pressurePlates.stream().toArray()));
 
         draw();
     }
@@ -110,15 +132,16 @@ public class HelloController implements Initializable, Runnable{
                     for (int i=0 ; i<bullets.size() ; i++) {
                         bullets.get(i).draw(gc);
                     }
-                    for(int i=0 ; i<pressurePlates.size() ; i++){
-                        pressurePlates.get(i).draw(gc);
-                    }
 
 
                     for (int i = 0; i < gameMap.getMapGuide().size() ; i++) {
                         for (int j = 0; j < gameMap.getMapGuide().get(i).size(); j++) {
                             gameMap.getMapGuide().get(i).get(j).draw(gc);
                         }
+                    }
+                    for(int i=0 ; i<pressurePlates.size() ; i++){
+                        gc.setFill(Color.VIOLET);
+                        pressurePlates.get(i).draw(gc);
                     }
 
 
@@ -129,6 +152,7 @@ public class HelloController implements Initializable, Runnable{
                     if ( character.getLife() > 0 ){
                         character.draw(gc);
                     }
+
                 });
 
                 character.movement();
