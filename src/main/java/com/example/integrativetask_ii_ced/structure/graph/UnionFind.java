@@ -1,7 +1,6 @@
 package com.example.integrativetask_ii_ced.structure.graph;
 
 public class UnionFind {
-
     private final int[] parent;
 
     public UnionFind(int size) {
