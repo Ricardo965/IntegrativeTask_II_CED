@@ -451,6 +451,37 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
         }
         return naryTree;
     }
+    
+    public double[][] floydWarshall() {
+        double[][] distances = new double[vertexes.size()][vertexes.size()];
+        //Vertex<V>[][] previous = new Vertex[vertexList.size()][vertexList.size()];
+        for (int i = 0; i < vertexes.size(); i++) {
+            for (int j = 0; j < vertexes.size(); j++) {
+                if ( i == j ) {
+                    distances[i][j] = 0.0;
+                } else if (vertexes.get(i).getAdjacency().contains(vertexes.get(j))) {
+                    distances[i][j] = vertexes.get(i).getAdjacency().get((vertexes.get(i).getAdjacency().indexOf(vertexes.get(j)))).getDistance();
+
+                } else {
+                    distances[i][j] = Double.MAX_VALUE;
+
+                }
+                //previous[i][j] = vertexList.get(j);
+
+            }
+        }
+
+        for (int k = 0; k < vertexes.size(); k++) {
+            for (int i = 0; i < vertexes.size(); i++) {
+                for (int j = 0; j < vertexes.size(); j++) {
+                    if ( distances[i][j] > distances[i][k] + distances[k][j] ) {
+                        distances[i][j] = distances[i][k] + distances[k][j];
+                    }
+                }
+            }
+        }
+        return distances;
+    }
 
 
 
