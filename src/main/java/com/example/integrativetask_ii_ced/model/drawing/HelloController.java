@@ -48,9 +48,9 @@ public class HelloController implements Initializable, Runnable{
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Welcome to the game!");
-        alert.setHeaderText("Welcome to the game!");
-        alert.setContentText("Choose a algorithm!");
+        alert.setTitle("Bienvenido al juego!");
+        alert.setHeaderText("Elección de grafo");
+        alert.setContentText("Escoge el tipo de grafo: ");
         ButtonType okButton = new ButtonType("Lista de adyacencia");
         ButtonType cancelButton = new ButtonType("Matriz de adyacencia");
 

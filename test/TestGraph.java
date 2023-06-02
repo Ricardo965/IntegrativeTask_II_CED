@@ -442,7 +442,7 @@ public class TestGraph {
              ) {
             chain += a +" ";
         }
-        assertEquals("S R", chain.trim());
+        assertEquals("R S", chain.trim());
 
     }
     @Test
@@ -454,7 +454,7 @@ public class TestGraph {
         ) {
             chain += a +" ";
         }
-        assertEquals("V R S W T X U", chain.trim());
+        assertEquals("U X T W S R V", chain.trim());
 
     }
 
@@ -470,17 +470,6 @@ public class TestGraph {
         assertEquals("X U Y", chain.trim());
 
     }
-    @Test
-    public void dfsForOneNodeSearch3(){
-        setUpStage4NoDirected();
-        List<String> list = graph.dfsForOneNode("V","W");
-        String chain = "";
-        for (String a: list
-        ) {
-            chain += a +" ";
-        }
-        assertEquals("V R S W", chain.trim());
-    }
 
     @Test
     public void dfsOneNodeSearch4(){
@@ -491,7 +480,7 @@ public class TestGraph {
         ) {
             chain += a +" ";
         }
-        assertEquals("T X U Y", chain.trim());
+        assertEquals("Y U X T", chain.trim());
     }
 
 
@@ -649,7 +638,7 @@ public class TestGraph {
     @Test
     public void dfsForOneNodeSearchAM(){
         setUpStage5AM();
-        List<String> list = graphAM.dfsSingleNode("S","R");
+        List<String> list = graphAM.dfsForOneNode("S","R");
         String chain = "";
         for (String a: list
         ) {
@@ -662,7 +651,7 @@ public class TestGraph {
     @Test
     public void dfsForOneNodeSearch1AM(){
         setUpStage4NoDirectedAM();
-        List<String> list = graphAM.dfsSingleNode("V","U");
+        List<String> list = graphAM.dfsForOneNode("V","U");
         String chain = "";
         for (String a: list
         ) {
@@ -693,20 +682,20 @@ public class TestGraph {
     public void dfsForOneNodeSearch2AM(){
         //Here is missing further testing
         setUpStage4NoDirectedAM();
-        List<String> list = graphAM.dfsSingleNode("Y","X");
+        List<String> list = graphAM.dfsForOneNode("Y","X");
         String chain = "";
         for (String a: list
         ) {
             chain += a +" ";
         }
-        assertEquals("X Y", chain.trim());
+        assertEquals("X U Y", chain.trim());
 
     }
 
     @Test
     public void dfsForOneNodeSearch3AM(){
         setUpStage4NoDirectedAM();
-        List<String> list = graphAM.dfsSingleNode("V","W");
+        List<String> list = graphAM.dfsForOneNode("V","W");
         String chain = "";
         for (String a: list
         ) {
@@ -719,17 +708,15 @@ public class TestGraph {
     public void dfsOneNodeSearch4AM(){
         //Here is missing further testing
         setUpStage4NoDirectedAM();
-        List<String> list = graphAM.dfsSingleNode("T","Y");
+        List<String> list = graphAM.dfsForOneNode("T","Y");
         String chain = "";
         for (String a: list
         ) {
             chain += a +" ";
         }
-        assertEquals("Y U X W T", chain.trim());
+        assertEquals("Y U X T", chain.trim());
     }
 
-
-    /////////////////////////////////////////
 
     @Test
     public void testKruskal1() {

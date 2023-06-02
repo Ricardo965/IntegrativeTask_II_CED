@@ -18,5 +18,7 @@ module com.example.integrativetask_ii_ced {
     opens com.example.integrativetask_ii_ced.model.entities.objects.obstacle to javafx.fxml;
     exports com.example.integrativetask_ii_ced.model.entities.objects.functional;
     opens com.example.integrativetask_ii_ced.model.entities.objects.functional to javafx.fxml;
+    exports com.example.integrativetask_ii_ced.structure.graph;
+    exports com.example.integrativetask_ii_ced.structure.narytree;
 
 }
