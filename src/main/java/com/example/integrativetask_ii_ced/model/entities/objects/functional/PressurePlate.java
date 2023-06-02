@@ -18,7 +18,7 @@ public class PressurePlate extends Obstacle {
         gc.strokeRect(hitBox.getX0(), hitBox.getY0(), width, height);
 
         if ( isPressed ) {
-            gc.setFill(Color.BLUE);
+            gc.setFill(Color.CORAL);
         } else {
             gc.setFill(Color.GREEN);
         }
