@@ -13,17 +13,14 @@ import javafx.scene.ImageCursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class HelloController implements Initializable, Runnable{
 
@@ -72,7 +69,7 @@ public class HelloController implements Initializable, Runnable{
 
         for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
             if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
-                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,3000);
+                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,500);
                 break;
             }
         }
@@ -91,7 +88,6 @@ public class HelloController implements Initializable, Runnable{
         new Thread(finalBoss).start();
         new Thread(this).start();
         pressurePlates = gameMap.creatingPressurePlates(pressurePlates);
-        System.out.println(Arrays.toString(pressurePlates.stream().toArray()));
 
         draw();
     }
@@ -115,59 +111,112 @@ public class HelloController implements Initializable, Runnable{
                 pressurePlates.get(i).isPressed(character);
             }
 
+            if ( allIsPressed() ){
+                finalBoss.died();
+            }
+
         }
+    }
+
+    public boolean allIsPressed(){
+        if ( pressurePlates.size() == 0 ) return false;
+        for(int i=0 ; i<pressurePlates.size() ; i++){
+            if ( !pressurePlates.get(i).isPressed() ){
+                return false;
+            }
+        }
+        return true;
     }
 
 
 
     public void draw(){
         Thread h = new Thread(() -> {
-            while(true){
-                Platform.runLater(() -> {
-                    gc.setFill(Color.WHITE);
-                    gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-
-
-                    for (int i=0 ; i<bullets.size() ; i++) {
-                        bullets.get(i).draw(gc);
-                    }
-
-
-                    for (int i = 0; i < gameMap.getMapGuide().size() ; i++) {
-                        for (int j = 0; j < gameMap.getMapGuide().get(i).size(); j++) {
-                            gameMap.getMapGuide().get(i).get(j).draw(gc);
+            AtomicBoolean zzz = new AtomicBoolean(true);
+            while(zzz.get()){
+                    Platform.runLater(() -> {
+                        gc.setFill(Color.WHITE);
+                        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                        for (int i = 0; i < bullets.size(); i++){
+                            bullets.get(i).draw(gc);
                         }
+                        for (int i = 0; i < gameMap.getMapGuide().size(); i++){
+                            for (int j = 0; j < gameMap.getMapGuide().get(i).size(); j++){
+                                gameMap.getMapGuide().get(i).get(j).draw(gc);
+                            }
+                        }
+                        for (int i = 0; i < pressurePlates.size(); i++){
+                            gc.setFill(Color.VIOLET);
+                            pressurePlates.get(i).draw(gc);
+                        }
+                        finalBoss.draw(gc);
+                        for (int i = 0; i < mobilePumps.size(); i++){
+                            mobilePumps.get(i).draw(gc);
+                        }
+                        if ( character.getLife() > 0 ){
+                            character.draw(gc);
+                        }
+                        if ( finalBoss.getLife()<1 || character.getLife()<1 ){
+                            zzz.set(false);
+                        }
+
+                    });
+                    character.movement();
+
+                    try {
+                        Thread.sleep(16);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    for(int i=0 ; i<pressurePlates.size() ; i++){
-                        gc.setFill(Color.VIOLET);
-                        pressurePlates.get(i).draw(gc);
-                    }
-
-
-                    finalBoss.draw(gc);
-                    for (int i=0; i< mobilePumps.size() ; i++) {
-                        mobilePumps.get(i).draw(gc);
-                    }
-                    if ( character.getLife() > 0 ){
-                        character.draw(gc);
-                    }
-
-                });
-
-                character.movement();
-
+            }
+            if(finalBoss.getLife()<1 || character.getLife()<1){
+                exit();
                 try {
-                    Thread.sleep(16);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Thread.sleep(500000000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         });
         h.start();
+
     }
 
+    private void exit() {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (finalBoss.getLife() < 1) {
+                alert.setTitle("YOU WINNN!");
+                alert.setHeaderText("YOU ARE THE BEST!");
+                ButtonType cancelButton = new ButtonType("EXIT");
+                alert.getButtonTypes().setAll(cancelButton);
+
+                alert.showAndWait().ifPresent(buttonType -> {
+                    if (buttonType == cancelButton) {
+                        System.exit(0);
+                    }
+                });
+            } else {
+                alert.setTitle("YOU LOOSEEEE :(((!");
+                alert.setHeaderText("TRY AGAIN, WE HAVE TO DEFEAT MARLON!");
+                ButtonType cancelButton = new ButtonType("EXIT");
+                alert.getButtonTypes().setAll(cancelButton);
+
+                alert.showAndWait().ifPresent(buttonType -> {
+                    if (buttonType == cancelButton) {
+                        System.exit(0);
+                    }
+                });
+            }
+        });
+    }
 
 
     private void onMouseMoved(MouseEvent e) {
