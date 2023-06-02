@@ -75,7 +75,14 @@ public class Heap<K extends Comparable,V> implements IPriorityQueue<K,V> {
     }
 
     //Priority Queue methods
-
+    public HeapNode<K,V> searchByValue(V value){
+        for (int i = 0; i < heapSize; i++) {
+            if (list.get(i).getValue().equals(value)){
+                return list.get(i);
+            }
+        }
+        return null;
+    }
 
     @Override
     public V heapExtractMin() {
