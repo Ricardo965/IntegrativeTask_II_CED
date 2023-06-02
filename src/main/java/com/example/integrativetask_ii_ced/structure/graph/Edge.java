@@ -39,7 +39,4 @@ public class Edge <V extends Comparable<V>> implements Comparable<Edge<V>> {
     public int compareTo(Edge<V> o) {
         return Double.compare(this.weight, o.weight);
     }
-
-
-
 }
