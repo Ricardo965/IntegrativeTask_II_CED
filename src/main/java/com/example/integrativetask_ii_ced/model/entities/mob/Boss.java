@@ -35,10 +35,9 @@ public class Boss extends Avatar implements Runnable{
                     diff.normalize();
                     diff.setMag(10);
                     MobilePump mobilePump = new MobilePump(getPosition().getX(),getPosition().getY(),1,200);
-                    new Thread(mobilePump).start();
                     HelloController.mobilePumps.add(mobilePump);
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

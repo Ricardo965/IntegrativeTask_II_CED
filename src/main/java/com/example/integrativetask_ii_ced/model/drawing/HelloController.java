@@ -4,7 +4,6 @@ import com.example.integrativetask_ii_ced.model.entities.*;
 import com.example.integrativetask_ii_ced.model.entities.mob.Boss;
 import com.example.integrativetask_ii_ced.model.entities.mob.MobilePump;
 import com.example.integrativetask_ii_ced.model.entities.objects.functional.Bullet;
-import com.example.integrativetask_ii_ced.model.entities.objects.Obstacle;
 import com.example.integrativetask_ii_ced.model.entities.objects.functional.PressurePlate;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -28,6 +27,8 @@ public class HelloController implements Initializable, Runnable{
     private GraphicsContext gc;
     public static Player character;
 
+    private static boolean matrixBased;
+
     public static GameMap gameMap = new GameMap(1200,720, 80,3);
     public static Boss finalBoss;
     public static CopyOnWriteArrayList<Bullet> bullets = new CopyOnWriteArrayList<>();
@@ -39,9 +40,12 @@ public class HelloController implements Initializable, Runnable{
 
     @Override
     public void initialize(java.net.URL location, java.util.ResourceBundle resources) {
+
+        setMatrixBased(false);
         gameMap.initialFillingOfMapWithNodesAndCoordinates();
         gameMap.creatingNotNavigableObstacles();
         gameMap.establishGraphMapRepresentationForMinimumPaths();
+
 
         for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
             if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
@@ -71,21 +75,20 @@ public class HelloController implements Initializable, Runnable{
     @Override
     public void run() {
         while (true) {
-            for (Bullet bullet : bullets){
-                if ( bullet.outside(canvas.getHeight(), canvas.getWidth()) || bullet.giveDamage(character) ){
-                    bullets.remove(bullet);
+            for (int i=0 ; i<bullets.size() ; i++){
+                if ( bullets.get(i).outside(canvas.getHeight(), canvas.getWidth()) || bullets.get(i).giveDamage(character) ){
+                    bullets.remove(bullets.get(i));
                 }
             }
 
-            for (MobilePump mobilePump: mobilePumps
-                 ) {
-                if ( mobilePump.outside(canvas.getHeight(), canvas.getWidth()) || mobilePump.giveDamage(character) ){
-                    mobilePumps.remove(mobilePump);
+            for (int i = 0; i < mobilePumps.size(); i++) {
+                if ( mobilePumps.get(i).outside(canvas.getHeight(), canvas.getWidth()) || mobilePumps.get(i).giveDamage(character) ) {
+                    mobilePumps.remove(mobilePumps.get(i));
                 }
             }
 
-            for(PressurePlate pressurePlate : pressurePlates){
-                pressurePlate.isPressed(character);
+            for(int i=0 ; i<pressurePlates.size() ; i++){
+                pressurePlates.get(i).isPressed(character);
             }
 
         }
@@ -99,29 +102,31 @@ public class HelloController implements Initializable, Runnable{
                 Platform.runLater(() -> {
                     gc.setFill(Color.WHITE);
                     gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                    finalBoss.draw(gc);
-                    if ( character.getLife() > 0 ){
-                        character.draw(gc);
+
+
+
+                    for (int i=0 ; i<bullets.size() ; i++) {
+                        bullets.get(i).draw(gc);
+                    }
+                    for(int i=0 ; i<pressurePlates.size() ; i++){
+                        pressurePlates.get(i).draw(gc);
                     }
 
-                    for (Bullet bullet : bullets) {
-                        bullet.draw(gc);
-                    }
-                    for(PressurePlate pressurePlate : pressurePlates){
-                        pressurePlate.draw(gc);
-                    }
 
                     for (int i = 0; i < gameMap.getMapGuide().size() ; i++) {
                         for (int j = 0; j < gameMap.getMapGuide().get(i).size(); j++) {
                             gameMap.getMapGuide().get(i).get(j).draw(gc);
                         }
                     }
+
+
                     finalBoss.draw(gc);
-                    for (MobilePump mobilePump: mobilePumps
-                         ) {
-                        mobilePump.draw(gc);
+                    for (int i=0; i< mobilePumps.size() ; i++) {
+                        mobilePumps.get(i).draw(gc);
                     }
-                    character.draw(gc);
+                    if ( character.getLife() > 0 ){
+                        character.draw(gc);
+                    }
                 });
 
                 character.movement();
@@ -208,5 +213,21 @@ public class HelloController implements Initializable, Runnable{
 
     public static void setMobilePumps(CopyOnWriteArrayList<MobilePump> mobilePumps) {
         HelloController.mobilePumps = mobilePumps;
+    }
+
+    public static Player getCharacter() {
+        return character;
+    }
+
+    public static void setCharacter(Player character) {
+        HelloController.character = character;
+    }
+
+    public static boolean isMatrixBased() {
+        return matrixBased;
+    }
+
+    public static void setMatrixBased(boolean matrixBased) {
+        HelloController.matrixBased = matrixBased;
     }
 }
