@@ -69,9 +69,15 @@ public class GameMap {
         return temporal;
     }
 
-    public Stack<Coordinate> shortestPath(Coordinate from, Coordinate to){
+    public Stack<Coordinate> shortestPathUsingBFS(Coordinate from, Coordinate to){
 
         return graph.bfsForOneNode(from, to);
+
+    }
+
+    public Stack<Coordinate> shortestPathUsingDFS(Coordinate from, Coordinate to){
+
+        return graph.dfsForOneNode(from, to);
 
     }
 
@@ -252,6 +258,7 @@ public class GameMap {
     public void setChunkSize(double chunkSize) {
         this.chunkSize = chunkSize;
     }
+
 
 
 }

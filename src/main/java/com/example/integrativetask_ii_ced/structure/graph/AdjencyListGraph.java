@@ -304,8 +304,8 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
     }
 
 
-    public List<V> dfsForOneNode(V from, V to) {
-
+    public Stack<V> dfsForOneNode(V from, V to) {
+        int size = dfs().size();
         if (dfs().size() >1) return null;
         NaryTree naryTree = dfs().get(0);
         Stack fromPath = new Stack<>();
@@ -338,6 +338,7 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
                         }
                     }
                 } else {
+
                     V value = (V) fromPath.get(i);
                     Stack temporal = new Stack<>();
 
@@ -346,26 +347,41 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
                         temporal.add(fromPath.get(j));
                     }
 
-                    temporal.add(value);
-                    while(!temporal.isEmpty()) {
-                        result.add(temporal.pop());
-                    }
-
-
                     boolean isFound = false;
                     int j  = toPath.size()-1;
                     while (!toPath.isEmpty()){
                         if (toPath.get(j).equals(value)) isFound = true;
-                        if (isFound) result.add(toPath.pop());
+                        if (isFound) temporal.add(toPath.pop());
                         else toPath.pop();
                         j--;
                     }
+
+                    while(!temporal.isEmpty()){
+                        result.add(temporal.pop());
+                    }
                 }
-                
+                break;
             }
         }
 
-        return (List<V>) result;
+        List list = (List) result;
+
+        Stack stackResult = new Stack<>();
+
+        if (list.get(0).equals(from)){
+
+            for (int i = list.size()-1;i > -1; i--) {
+                stackResult.add(list.get(i));
+            }
+        }else {
+            for (int i = 0; i < result.size(); i++) {
+                stackResult.add(list.get(i));
+            }
+        }
+
+
+
+        return stackResult;
 
     }
     public Stack<V> pathToCeil (Vertex<V> current, Stack<V> stack){
