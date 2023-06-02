@@ -2,10 +2,12 @@ package com.example.integrativetask_ii_ced.structure.graph;
 
 
 import com.example.integrativetask_ii_ced.structure.heap.Heap;
+import com.example.integrativetask_ii_ced.structure.heap.HeapNode;
 import com.example.integrativetask_ii_ced.structure.interfaces.ColorType;
 import com.example.integrativetask_ii_ced.structure.interfaces.IPriorityQueue;
 import com.example.integrativetask_ii_ced.structure.interfaces.Igraph;
 import com.example.integrativetask_ii_ced.structure.narytree.NaryTree;
+import com.example.integrativetask_ii_ced.structure.narytree.Node;
 
 import java.util.*;
 
@@ -390,6 +392,51 @@ public class AdjencyListGraph <V extends Comparable<V> > implements Igraph<V> {
         }
         return A;
     }
+
+    public NaryTree<Vertex<V>> prim(V sValue) {
+        Vertex<V> s = searchVertex(sValue);
+        NaryTree<Vertex<V>> naryTree = new NaryTree<>();
+        naryTree.setRoot(new Node<>(s));
+        Heap<Double, Vertex<V>> queue = new Heap<>();
+        queue.insert(0.0, s);
+        for(Vertex <V> vertex : vertexes){
+            if(vertex != s){
+                queue.insert(Double.MAX_VALUE, vertex);
+                vertex.setColor(ColorType.WHITE);
+            }
+        }
+        while (queue.getHeapSize() > 0){
+            Vertex<V> u = queue.heapExtractMin();
+            for(Vertex<V> adj : u.getAdjacency()){
+                HeapNode<Double, Vertex<V>> heapNode = queue.searchByValue(adj);
+                if(heapNode != null){
+                    HeapNode<Double, Vertex<V>> v = heapNode;
+                    if(v.getValue().getColor() == ColorType.WHITE && (getWeightedMatrix().get(u.getValue()).get(adj.getValue())) < v.getKey()){
+                        v.setKey(Double.valueOf(getWeightedMatrix().get(u.getValue()).get(adj.getValue())));
+                        //v.getValue().setWeight(Double.valueOf(getWeightedMatrix().get(u.getValue()).get(adj.getValue())));
+                        queue.decreasePriority(v.getValue(),Double.valueOf(getWeightedMatrix().get(u.getValue()).get(adj.getValue())));
+                        v.getValue().setFather(u);
+                    }
+                }
+            }
+            queue.buildHeap();
+            u.setColor(ColorType.BLACK);
+        }
+        Queue<Vertex<V>> treeQueue = new LinkedList<>();
+        treeQueue.add(s);
+        while (!treeQueue.isEmpty()){
+            Vertex<V> vertex = treeQueue.poll();
+            for(Vertex<V> v : vertex.getAdjacency()){
+                if(v.getFather() == vertex){
+                    treeQueue.add(v);
+                    naryTree.insertNode(v, vertex);
+                }
+            }
+        }
+        return naryTree;
+    }
+
+
 
 
     @Override

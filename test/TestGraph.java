@@ -1,5 +1,8 @@
 import com.example.integrativetask_ii_ced.structure.graph.AdjacencyMatrixGraph;
 import com.example.integrativetask_ii_ced.structure.graph.AdjencyListGraph;
+import com.example.integrativetask_ii_ced.structure.graph.Edge;
+import com.example.integrativetask_ii_ced.structure.graph.Vertex;
+import com.example.integrativetask_ii_ced.structure.narytree.NaryTree;
 import com.example.integrativetask_ii_ced.structure.narytree.Node;
 import org.junit.jupiter.api.Test;
 
@@ -179,6 +182,67 @@ public class TestGraph {
         graphAM.insertEdge("X","U");
         graphAM.insertEdge("X","Y");
         graphAM.insertEdge("U","Y");
+    }
+
+    public void setUpStage9NoDirectedAndWeightAM() {
+        graphAM = new AdjacencyMatrixGraph<>(false, true);
+        graphAM.insertVertex("A");
+        graphAM.insertVertex("B");
+        graphAM.insertVertex("C");
+        graphAM.insertEdge("A", "B", 10.0);
+        graphAM.insertEdge("C", "A", 15.0);
+
+    }
+
+    public void setupKruskal1() {
+        graphAM = new AdjacencyMatrixGraph<String>(false, true);
+
+        graphAM.insertVertex("A");
+        graphAM.insertVertex("B");
+        graphAM.insertVertex("C");
+        graphAM.insertVertex("D");
+        graphAM.insertVertex("E");
+        graphAM.insertVertex("Z");
+
+        graphAM.insertEdge("A", "B", 4.0);
+        graphAM.insertEdge("A", "C", 2.0);
+        graphAM.insertEdge("B", "D", 5.0);
+        graphAM.insertEdge("B", "C", 1.0);
+        graphAM.insertEdge("C", "D", 8.0);
+        graphAM.insertEdge("C", "E", 10.0);
+        graphAM.insertEdge("D", "E", 2.0);
+        graphAM.insertEdge("D", "Z", 6.0);
+        graphAM.insertEdge("E", "Z", 3.0);
+
+    }
+
+    public void setupFloyd() {
+        graphAM = new AdjacencyMatrixGraph<>(false, true);
+        graphAM.insertVertex("A");
+        graphAM.insertVertex("B");
+        graphAM.insertVertex("C");
+        graphAM.insertVertex("D");
+        graphAM.insertVertex("E");
+        graphAM.insertVertex("F");
+        graphAM.insertVertex("G");
+
+
+        graphAM.insertEdge("A", "B", 3.0);
+        graphAM.insertEdge("A", "C", 5.0);
+        graphAM.insertEdge("B", "D", 1.0);
+        graphAM.insertEdge("B", "E", 8.0);
+        graphAM.insertEdge("C", "F", 12.0);
+        graphAM.insertEdge("C", "G", 5.0);
+    }
+
+    public void setUpStage9NoDirectedAndWeight() {
+        graph = new AdjencyListGraph<>(false, true);
+        graph.insertVertex("A");
+        graph.insertVertex("B");
+        graph.insertVertex("C");
+        graph.insertWeightedEdge("A", "B", 10);
+        graph.insertWeightedEdge("C", "A", 15);
+
     }
     // Dijkstra testing
 
@@ -662,5 +726,241 @@ public class TestGraph {
             chain += a +" ";
         }
         assertEquals("Y U X W T", chain.trim());
+    }
+
+
+    /////////////////////////////////////////
+
+    @Test
+    public void testKruskal1() {
+        setupKruskal1();
+        ArrayList<Edge<String>> paths = graphAM.kruskal();
+        String chain = "";
+        String result = "B C A C D E E Z B D";
+        for (int i = 0; i < paths.size(); i++) {
+            chain += paths.get(i).getFrom().getValue() + " " + paths.get(i).getTo().getValue() + " ";
+        }
+        assertEquals(result, chain.trim());
+    }
+
+    @Test
+    public void testKruskal2() {
+        setUpWeightedGraphWithCycle();
+
+        ArrayList<Edge<String>> paths = graph.kruskal();
+        String chain = "";
+        for (int i = 0; i < paths.size(); i++) {
+            chain += paths.get(i).getFrom().getValue() + " " + paths.get(i).getTo().getValue() + " ";
+        }
+        assertEquals("B C A C E D E Z B D", chain.trim());
+    }
+
+    @Test
+    public void testKruskal3() {
+        setUpStage9NoDirectedAndWeight();
+        ArrayList<Edge<String>> paths = graph.kruskal();
+        String chain = "";
+        for (int i = 0; i < paths.size(); i++) {
+            chain += paths.get(i).getFrom().getValue() + " " + paths.get(i).getTo().getValue() + " ";
+        }
+        assertEquals("A B C A", chain.trim());
+    }
+
+    @Test
+    public void testPrim1() {
+        setupKruskal1();
+        String[] expectedResult = {"A", "C", "B", "D", "E", "Z"};
+        //NaryTree<Vertex<String>> result = graphAM.prim("A");
+        NaryTree<Vertex<String>> result = graphAM.prim();
+        ArrayList<Node> resultPreOrder = result.preOrder();
+        for (int i = 0; i < resultPreOrder.size(); i++) {
+            assertEquals(expectedResult[i], ((Vertex) resultPreOrder.get(i).getElement()).getValue());
+        }
+
+    }
+
+    @Test
+    public void testPrim1_1() {
+        setupKruskal1();
+        String[] expectedResult = {"A", "C", "B", "D", "E", "Z"};
+        //NaryTree<Vertex<String>> result = graphAM.prim("A");
+        NaryTree<Vertex<String>> result = graphAM.prim("A");
+        ArrayList<Node> resultPreOrder = result.preOrder();
+        for (int i = 0; i < resultPreOrder.size(); i++) {
+            assertEquals(expectedResult[i], ((Vertex) resultPreOrder.get(i).getElement()).getValue());
+        }
+
+    }
+
+    @Test
+    public void testPrim2() {
+        setUpWeightedGraphWithCycle();
+        String[] expectedResult = {"A", "C", "B", "D", "E", "Z"};
+        NaryTree<Vertex<String>> result = graph.prim("A");
+        ArrayList<Node> resultPreOrder = result.preOrder();
+        for (int i = 0; i < resultPreOrder.size(); i++) {
+            assertEquals(expectedResult[i], ((Vertex) resultPreOrder.get(i).getElement()).getValue());
+        }
+
+    }
+
+    @Test
+    public void testPrim3() {
+        setUpWeightedGraphWithCycle();
+        String[] expectedResult = {"D", "B", "C", "A", "E", "Z"};
+        NaryTree<Vertex<String>> result = graph.prim("D");
+        ArrayList<Node> resultPreOrder = result.preOrder();
+        for (int i = 0; i < resultPreOrder.size(); i++) {
+            assertEquals(expectedResult[i], ((Vertex) resultPreOrder.get(i).getElement()).getValue());
+        }
+
+    }
+
+    // Dijkstra testing
+
+    @Test
+    public void dijkstraForGraphWithCycleA() {
+        setUpWeightedGraphWithCycle();
+        Map distance = graph.dijkstra("A")[0];
+
+        Map prev = graph.dijkstra("A")[1];
+        assertEquals(13, distance.get("Z"));
+        assertEquals(0, distance.get("A"));
+        assertEquals(3, distance.get("B"));
+        assertEquals(2, distance.get("C"));
+        assertEquals(8, distance.get("D"));
+        assertEquals(10, distance.get("E"));
+
+        String chain = "";
+        String init = "Z";
+        Stack stack = new Stack<>();
+        stack.add(init);
+
+        while (prev.get(init) != null) {
+
+            stack.add(prev.get(init));
+            init = (String) prev.get(init);
+        }
+        while (!stack.isEmpty()) {
+            chain += stack.pop() + " ";
+        }
+        assertEquals("A C B D E Z", chain.trim());
+    }
+
+    @Test
+    public void dijkstraForGraphWithCycleZ() {
+        setUpWeightedGraphWithCycle();
+        Map distance = graph.dijkstra("Z")[0];
+
+        Map prev = graph.dijkstra("A")[1];
+        assertEquals(0, distance.get("Z"));
+        assertEquals(13, distance.get("A"));
+        assertEquals(10, distance.get("B"));
+        assertEquals(11, distance.get("C"));
+        assertEquals(5, distance.get("D"));
+        assertEquals(3, distance.get("E"));
+
+        String chain = "";
+        String init = "Z";
+        Stack stack = new Stack<>();
+        stack.add(init);
+
+        while (prev.get(init) != null) {
+
+            stack.add(prev.get(init));
+            init = (String) prev.get(init);
+        }
+        while (!stack.isEmpty()) {
+            chain += stack.pop() + " ";
+        }
+        assertEquals("A C B D E Z", chain.trim());
+    }
+
+    @Test
+    public void dijkstraForGraphWithCycleD() {
+        setUpWeightedGraphWithCycle();
+        Map distance = graph.dijkstra("D")[0];
+
+        Map prev = graph.dijkstra("A")[1];
+        assertEquals(5, distance.get("Z"));
+        assertEquals(8, distance.get("A"));
+        assertEquals(5, distance.get("B"));
+        assertEquals(6, distance.get("C"));
+        assertEquals(0, distance.get("D"));
+        assertEquals(2, distance.get("E"));
+
+        String chain = "";
+        String init = "Z";
+        Stack stack = new Stack<>();
+        stack.add(init);
+
+        while (prev.get(init) != null) {
+
+            stack.add(prev.get(init));
+            init = (String) prev.get(init);
+        }
+        while (!stack.isEmpty()) {
+            chain += stack.pop() + " ";
+        }
+        assertEquals("A C B D E Z", chain.trim());
+    }
+
+    //Floyd Testing
+
+    @Test
+    public void testFloydWarshall1() {
+        setupFloyd();
+        double[][] expectedResult = {
+                {0, 3, 5, 4, 11, 17, 10, Double.MAX_VALUE},
+                {3, 0, 8, 1, 8, 20, 13, Double.MAX_VALUE},
+                {5, 8, 0, 9, 16, 12, 5, Double.MAX_VALUE},
+                {4, 1, 9, 0, 9, 21, 14, Double.MAX_VALUE},
+                {11, 8, 16, 9, 0, 28, 21, Double.MAX_VALUE},
+                {17, 20, 12, 21, 28, 0, 17, Double.MAX_VALUE},
+                {10, 13, 5, 14, 21, 17, 0, Double.MAX_VALUE},
+                {Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, 0}
+        };
+        double[][] result = graphAM.floydWarshall();
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                assertEquals(expectedResult[i][j], result[i][j], 0);
+            }
+        }
+    }
+
+    @Test
+    public void testFloydWarshall2(){
+        setupKruskal1();
+        double[][] expectedResult = {
+                {0, 3, 2, 8, 10, 13},
+                {3, 0, 1, 5, 7, 10},
+                {2, 1, 0, 6, 8, 11},
+                {8, 5, 6, 0, 2, 5},
+                {10, 7, 8, 2, 0, 3},
+                {13, 10, 11, 5, 3, 0},
+
+        };
+        double[][] result = graphAM.floydWarshall();
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                assertEquals(expectedResult[i][j], result[i][j], 0);
+            }
+        }
+    }
+
+    @Test
+    public void testFloydWarshall3(){
+        setUpStage9NoDirectedAndWeightAM();
+        double[][] expectedResult = {
+                {0, 10, 15},
+                {10, 0, 25},
+                {15, 25, 0},
+        };
+        double[][] result = graphAM.floydWarshall();
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
+                assertEquals(expectedResult[i][j], result[i][j], 0);
+            }
+        }
     }
 }
