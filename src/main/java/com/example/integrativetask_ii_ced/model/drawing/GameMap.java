@@ -40,8 +40,13 @@ public class GameMap {
             for (int i = 2; i < height / nodeSize; i += chunkSize+4) {
                 double yRange = i + chunkSize;
                 for (int j = 4; j < width / nodeSize; j += chunkSize+3) {
-                    int rowNodeSelection = random.nextInt((int) yRange - i) + i;
-                    int columnNodeSelection = random.nextInt((int) chunkSize) + j;
+                    int rowNodeSelection= 0;
+                    int columnNodeSelection = 0;
+                    while(true){
+                        rowNodeSelection = random.nextInt((int) yRange - i) + i;
+                        columnNodeSelection = random.nextInt((int) chunkSize) + j;
+                        if (!((rowNodeSelection>2 && rowNodeSelection <6) && (columnNodeSelection >5 && columnNodeSelection <9))) break;
+                    }
                     if (getMapGuide().get(rowNodeSelection).get(columnNodeSelection).isNavigable()) {
                         pressurePlates.add(new PressurePlate(
                                 getMapGuide().get(rowNodeSelection).get(columnNodeSelection).getPosition().getX(),

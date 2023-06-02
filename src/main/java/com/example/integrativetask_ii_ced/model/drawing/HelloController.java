@@ -69,7 +69,7 @@ public class HelloController implements Initializable, Runnable{
 
         for (int i = 0; i < gameMap.getMapGuide().get(0).size(); i++) {
             if (gameMap.getMapGuide().get(0).get(i).isNavigable()){
-                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,500);
+                character = new Player(gameMap.getMapGuide().get(0).get(i).getPosition().getX(),gameMap.getMapGuide().get(0).get(i).getPosition().getY(), 60,60,1000);
                 break;
             }
         }
@@ -87,6 +87,7 @@ public class HelloController implements Initializable, Runnable{
         new Thread(character).start();
         new Thread(finalBoss).start();
         new Thread(this).start();
+
         pressurePlates = gameMap.creatingPressurePlates(pressurePlates);
 
         draw();
